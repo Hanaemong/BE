@@ -1,5 +1,6 @@
-package com.hana.hanalink.survey.domain;
+package com.hana.hanalink.surveyresponse.domain;
 
+import com.hana.hanalink.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
-public class SurveyResponse {
+public class SurveyResponse extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long surveyResponseId;
