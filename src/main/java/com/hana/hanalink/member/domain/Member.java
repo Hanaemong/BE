@@ -1,6 +1,8 @@
 package com.hana.hanalink.member.domain;
 
+import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;
+import com.hana.hanalink.sigungu.domain.SiGunGu;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +30,10 @@ public class Member extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "fcmToken", nullable = false)
+    @Column(name = "fcm_token", nullable = false)
     private String fcmToken;
+
+    @OneToOne
+    @JoinColumn(name = "si_gun_gu_id")
+    private SiGunGu SiGunGu;
 }

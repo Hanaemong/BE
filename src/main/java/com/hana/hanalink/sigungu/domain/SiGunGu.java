@@ -16,7 +16,7 @@ public class SiGunGu extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long siGunGuId;
 
-    @Column(name = "si_gun_nu",nullable = false)
+    @Column(name = "si_gun_gu",nullable = false)
     private String siGunGu;
 
     @ManyToOne

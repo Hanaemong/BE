@@ -1,6 +1,8 @@
 package com.hana.hanalink.plan.domain;
 
 import com.hana.hanalink.common.domain.BaseEntity;
+import com.hana.hanalink.member.domain.Member;
+import com.hana.hanalink.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +20,10 @@ public class Plan extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long planId;
 
-    @Column(name = "planName", nullable = false)
+    @Column(name = "plan_name", nullable = false)
     private String planName;
 
-    @Column(name = "planDate", nullable = false)
+    @Column(name = "plan_date", nullable = false)
     private LocalDateTime planDate;
 
     @Column(name = "place", nullable = false)
@@ -30,6 +32,10 @@ public class Plan extends BaseEntity {
     @Column(name = "cost", nullable = false)
     private Long cost;
 
-    @Column(name = "planImg", nullable = false)
+    @Column(name = "plan_img")
     private String planImg;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
 }

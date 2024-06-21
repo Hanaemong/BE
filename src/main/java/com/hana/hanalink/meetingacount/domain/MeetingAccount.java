@@ -1,6 +1,8 @@
 package com.hana.hanalink.meetingacount.domain;
 
+import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;
+import com.hana.hanalink.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,10 +16,15 @@ public class MeetingAccount extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long meetingAccountId;
-    @Column(name = "meeting_acount_number",nullable = false)
+
+    @Column(name = "meeting_account_number",nullable = false)
     private String meetingAccountNumber;
-    @Column(name = "group_id",nullable = false)
-    private Long groupId;
-    @Column(name = "account_id",nullable = false)
-    private Long accountId;
+
+    @OneToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
 }

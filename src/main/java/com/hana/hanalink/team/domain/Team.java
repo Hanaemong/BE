@@ -1,6 +1,8 @@
 package com.hana.hanalink.team.domain;
 
 import com.hana.hanalink.common.domain.BaseEntity;
+import com.hana.hanalink.sigungu.domain.SiGunGu;
+import com.hana.hanalink.surveyresponse.domain.SurveyResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,17 +19,17 @@ public class Team extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @Column(name = "teamName", nullable = false)
+    @Column(name = "team_name", nullable = false)
     private String teamName;
 
-    @Column(name = "teamDesc", nullable = false)
+    @Column(name = "team_desc", nullable = false)
     private String teamDesc;
 
     @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(name = "meetingAcount", nullable = false)
-    private String meetingAcount;
+    @Column(name = "meeting_account", nullable = false)
+    private String meetingAccount;
 
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
@@ -35,9 +37,17 @@ public class Team extends BaseEntity {
     @Column(name = "score", nullable = false)
     private Float score;
 
-    @Column(name = "thumbNail", nullable = false)
+    @Column(name = "thumb_nail")
     private String thumbNail;
 
-    @Column(name = "banner", nullable = false)
+    @Column(name = "banner")
     private String banner;
+
+    @OneToOne
+    @JoinColumn(name = "si_gun_gu_id")
+    private SiGunGu SiGunGu;
+
+    @OneToOne
+    @JoinColumn(name = "survey_response")
+    private SurveyResponse surveyResponse;
 }

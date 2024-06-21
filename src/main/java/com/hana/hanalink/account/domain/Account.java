@@ -17,10 +17,10 @@ public class Account extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
-    @Column(name = "accountName", nullable = false)
+    @Column(name = "account_name", nullable = false)
     private String accountName;
 
-    @Column(name = "accountNumber", nullable = false)
+    @Column(name = "account_number", nullable = false)
     private String accountNumber;
 
     @Column(name = "balance", nullable = false)

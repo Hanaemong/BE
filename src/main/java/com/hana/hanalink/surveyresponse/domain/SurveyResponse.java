@@ -14,8 +14,10 @@ public class SurveyResponse extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long surveyResponseId;
+
     @Column(name = "total_score")
     private Float totalScore;
+
     @Column(name = "survey_cnt")
     private Integer surveyCnt;
 }
