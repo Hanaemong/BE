@@ -4,6 +4,7 @@ import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Transaction extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +33,7 @@ public class Transaction extends BaseEntity {
     private TransactionType type;
 
     @ManyToOne
-    @JoinColumn(name = "account_to_id", nullable = false)
+    @JoinColumn(name = "account_to_id")
     private Account accountTo;
 
     @ManyToOne
