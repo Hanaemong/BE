@@ -1,6 +1,5 @@
 package com.hana.hanalink.member.domain;
 
-import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;
 import com.hana.hanalink.sigungu.domain.SiGunGu;
 import jakarta.persistence.*;
@@ -32,6 +31,9 @@ public class Member extends BaseEntity {
 
     @Column(name = "fcm_token", nullable = false)
     private String fcmToken;
+
+    @Column(name = "profile", nullable = false)
+    private String profile;
 
     @OneToOne
     @JoinColumn(name = "si_gun_gu_id")
