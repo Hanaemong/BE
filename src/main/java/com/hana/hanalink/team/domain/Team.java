@@ -28,9 +28,6 @@ public class Team extends BaseEntity {
     @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(name = "meeting_account", nullable = false)
-    private String meetingAccount;
-
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 

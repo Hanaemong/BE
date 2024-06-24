@@ -1,7 +1,6 @@
 package com.hana.hanalink.chatting.domain;
 
 import com.hana.hanalink.common.domain.BaseEntity;
-import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import jakarta.persistence.*;
