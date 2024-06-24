@@ -15,9 +15,18 @@ public class SurveyResponse extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long surveyResponseId;
 
-    @Column(name = "total_score")
+    @Column(name = "total_score", nullable = false)
     private Float totalScore;
 
-    @Column(name = "survey_cnt")
+    @Column(name = "survey_cnt", nullable = false)
     private Integer surveyCnt;
+
+
+    public void sumTotalScore(Float score){
+        totalScore += score;
+    }
+
+    public void addSurveyCnt(){
+        surveyCnt+=1;
+    }
 }
