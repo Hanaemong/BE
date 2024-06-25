@@ -3,6 +3,7 @@ package com.hana.hanalink.teammember.domain;
 import com.hana.hanalink.common.domain.BaseEntity;
 import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.team.domain.Team;
+import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,4 +36,13 @@ public class TeamMember extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
+
+    public TeamMemberRes toDto(Member member){
+        return TeamMemberRes.builder()
+                .name(nickname)
+                .gender(member.getGender())
+                .profile(member.getProfile())
+                .role(role)
+                .build();
+    }
 }
