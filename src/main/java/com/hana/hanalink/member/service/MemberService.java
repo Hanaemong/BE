@@ -6,7 +6,7 @@ import com.hana.hanalink.member.dto.request.JoinRequest;
 import com.hana.hanalink.member.dto.request.LoginRequest;
 import com.hana.hanalink.member.dto.response.LoginResponse;
 import com.hana.hanalink.member.exception.PasswordNotFoundException;
-import com.hana.hanalink.member.exception.PhoneNumberExistsException;
+import com.hana.hanalink.member.exception.PhoneExistsException;
 import com.hana.hanalink.member.exception.SiGunGuIdNotFoundException;
 import com.hana.hanalink.member.exception.SiGunIdNotFoundException;
 import com.hana.hanalink.member.repository.MemberRepository;
@@ -29,8 +29,15 @@ public class MemberService {
 
     public void join(JoinRequest request) {
         memberRepository.findByPhone(request.phone()).ifPresent(member -> {
-            throw new PhoneNumberExistsException("Phone number already in use");
+            throw new PhoneExistsException("Phone number already in use");
         });
+
+        String encodedPassword = passwordEncoder.encode(request.password());
+
+        if(memberRepository.findAll().stream()
+                .anyMatch(member -> passwordEncoder.matches(request.password(), member.getPassword()))){
+            throw new PasswordNotFoundException("Password already exists");
+        }
 
         SiGun siGun = siGunRepository.findById(request.siGunId())
                 .orElseThrow(() -> new SiGunIdNotFoundException("Invalid siGunId"));
@@ -42,7 +49,7 @@ public class MemberService {
                 .name(request.name())
                 .phone(request.phone())
                 .gender(request.gender())
-                .password(passwordEncoder.encode(request.password()))
+                .password(encodedPassword)
                 .siGunGu(siGunGu)
                 .fcmToken(request.fcmToken())
                 .profile(request.profile())
