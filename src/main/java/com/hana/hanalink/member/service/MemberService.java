@@ -3,7 +3,9 @@ package com.hana.hanalink.member.service;
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.member.dto.request.JoinRequest;
-import com.hana.hanalink.member.dto.response.JoinResponse;
+import com.hana.hanalink.member.dto.request.LoginRequest;
+import com.hana.hanalink.member.dto.response.LoginResponse;
+import com.hana.hanalink.member.exception.PasswordNotFoundException;
 import com.hana.hanalink.member.exception.PhoneNumberExistsException;
 import com.hana.hanalink.member.exception.SiGunGuIdNotFoundException;
 import com.hana.hanalink.member.exception.SiGunIdNotFoundException;
@@ -25,7 +27,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public JoinResponse join(JoinRequest request) {
+    public void join(JoinRequest request) {
         memberRepository.findByPhone(request.phone()).ifPresent(member -> {
             throw new PhoneNumberExistsException("Phone number already in use");
         });
@@ -47,9 +49,16 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+    }
+
+    public LoginResponse login(LoginRequest request){
+        Member member = memberRepository.findAll().stream()
+                .filter(m -> passwordEncoder.matches(request.password(), m.getPassword()))
+                .findFirst()
+                .orElseThrow(() -> new PasswordNotFoundException());
 
         String token = jwtUtil.generateAccessToken(member.getMemberId());
 
-        return new JoinResponse(token, member.getMemberId());
+        return new LoginResponse(token, member.getMemberId());
     }
 }
