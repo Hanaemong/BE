@@ -1,6 +1,6 @@
 package com.hana.hanalink.sigungu.service;
 
-import com.hana.hanalink.sigungu.dto.SiGunGuResponse;
+import com.hana.hanalink.sigungu.dto.response.SiGunGuResponse;
 import com.hana.hanalink.sigungu.repository.SiGunGuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

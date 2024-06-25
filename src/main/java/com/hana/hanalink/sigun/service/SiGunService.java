@@ -1,7 +1,6 @@
 package com.hana.hanalink.sigun.service;
 
-import com.hana.hanalink.sigun.domain.SiGun;
-import com.hana.hanalink.sigun.dto.SiGunResponse;
+import com.hana.hanalink.sigun.dto.response.SiGunResponse;
 import com.hana.hanalink.sigun.repository.SiGunRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
