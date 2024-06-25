@@ -1,6 +1,6 @@
 package com.hana.hanalink.sigungu.controller;
 
-import com.hana.hanalink.sigungu.dto.SiGunGuResponse;
+import com.hana.hanalink.sigungu.dto.response.SiGunGuResponse;
 import com.hana.hanalink.sigungu.service.SiGunGuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
