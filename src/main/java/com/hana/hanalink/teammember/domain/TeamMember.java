@@ -39,6 +39,7 @@ public class TeamMember extends BaseEntity {
 
     public TeamMemberRes toDto(String gender, String profile){
         return TeamMemberRes.builder()
+                .memberId(member.getMemberId())
                 .name(nickname)
                 .gender(gender)
                 .profile(profile)

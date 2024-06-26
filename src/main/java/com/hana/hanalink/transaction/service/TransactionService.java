@@ -4,6 +4,7 @@ import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.common.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
+import com.hana.hanalink.common.service.FirebaseFcmService;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
 import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
 import com.hana.hanalink.member.domain.MemberDetails;
@@ -12,6 +13,7 @@ import com.hana.hanalink.team.repository.TeamRepository;
 import com.hana.hanalink.transaction.domain.Transaction;
 import com.hana.hanalink.transaction.domain.TransactionType;
 import com.hana.hanalink.transaction.dto.request.TransactionReq;
+import com.hana.hanalink.transaction.dto.response.PaymentCardResponse;
 import com.hana.hanalink.transaction.dto.response.TransactionDetailRes;
 import com.hana.hanalink.transaction.dto.response.TransactionRes;
 import com.hana.hanalink.transaction.repository.TransactionRepository;
@@ -32,9 +34,16 @@ public class TransactionService {
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
 
+    private final FirebaseFcmService firebaseFcmService;
+
     public TransactionDetailRes getTransHistory(Long teamId){
 
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+
+        if (meetingAccount == null) {
+            throw new EntityNotFoundException();
+        }
+
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
         List<Transaction> transactions = transactionRepository.findByAccountTo_AccountId(account.getAccountId());
 
@@ -49,21 +58,32 @@ public class TransactionService {
 
     }
 
-    public Long paymentCard(Long teamId, MemberDetails member) {
+    public PaymentCardResponse paymentCard(Long teamId, MemberDetails member) {
 
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+
+        if (meetingAccount == null) {
+            throw new EntityNotFoundException();
+        }
+
         Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
+        String paidStore = PaymentTestData.getRandomTransTo();
+        Long paidAmount = PaymentTestData.getRandomAmount();
 
         Transaction transaction = Transaction.builder()
-                .amount(PaymentTestData.getRandomAmount())
+                .amount(paidAmount)
                 .transFrom(member.getMemberName())
-                .transTo(PaymentTestData.getRandomTransTo())
+                .transTo(paidStore)
                 .accountFrom(myAccount)
                 .accountTo(meetingAccount.getAccount())
                 .type(TransactionType.PAYMENT)
                 .build();
 
-        return transactionRepository.save(transaction).getTransId();
+        transactionRepository.save(transaction);
+
+        /*큐알코드 결제시 지출 내역 푸시알림*/
+        firebaseFcmService.sendTargetMessage(member.getMemberFcmToken(),paidAmount+"결제 완료 \uD83D\uDCB8",paidStore+"에서 결제가 완료되었어요!");
+        return new PaymentCardResponse(paidStore, paidAmount);
     }
 
     public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {

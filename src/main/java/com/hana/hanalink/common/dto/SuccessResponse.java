@@ -8,14 +8,15 @@ import lombok.Getter;
 public class SuccessResponse<T> {
 
     private boolean success;
+    private String type;
     private T data;
 
     public static <T> SuccessResponse<T> success(T data) {
-        return new SuccessResponse<>(true, data);
+        return new SuccessResponse<>(true,"", data);
     }
 
     public static <T> SuccessResponse<T> successWithNoData() {
-        return new SuccessResponse<>(true, null);
+        return new SuccessResponse<>(true,"",null);
     }
 
 }

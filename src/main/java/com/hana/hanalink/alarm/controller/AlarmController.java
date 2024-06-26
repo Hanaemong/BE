@@ -3,6 +3,7 @@ package com.hana.hanalink.alarm.controller;
 
 import com.hana.hanalink.alarm.dto.response.AlarmRes;
 import com.hana.hanalink.alarm.service.AlarmService;
+import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.member.domain.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +21,8 @@ public class AlarmController {
     private final AlarmService alarmService;
 
     @GetMapping("/alarm")
-    public List<AlarmRes> getAlarmList(@AuthenticationPrincipal MemberDetails member){
-        return alarmService.getAlarmList(member.getMemberId());
+    public SuccessResponse<List<AlarmRes>> getAlarmList(@AuthenticationPrincipal MemberDetails member){
+        return SuccessResponse.success(alarmService.getAlarmList(member.getMemberId()));
     }
 
 }

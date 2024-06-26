@@ -1,5 +1,6 @@
 package com.hana.hanalink.surveyresponse.controller;
 
+import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.survey.service.SurveyService;
 import com.hana.hanalink.surveyresponse.dto.request.SurveyRes;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class SurveyResponseController {
     private final SurveyService surveyService;
 
     @PostMapping("/survey/{teamId}")
-    public Long submitSurvey(@PathVariable("teamId") Long teamId, @RequestBody SurveyRes surveyRes) {
-        return surveyService.submitSurvey(teamId,surveyRes);
+    public SuccessResponse<Long> submitSurvey(@PathVariable("teamId") Long teamId, @RequestBody SurveyRes surveyRes) {
+        return SuccessResponse.success(surveyService.submitSurvey(teamId,surveyRes));
     }
 }
