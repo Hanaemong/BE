@@ -23,7 +23,10 @@ public class FirebaseConfig {
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build();
-        return FirebaseApp.initializeApp(options);
+        if(FirebaseApp.getApps().isEmpty()) {
+            FirebaseApp.initializeApp(options);
+        }
+        return FirebaseApp.getInstance();
     }
 
     @Bean
