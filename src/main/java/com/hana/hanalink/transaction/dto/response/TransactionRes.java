@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record TransactionRes(
-    String memberImg,
+    String memberProfile,
     String memberName,
     String memberGender,
     Long amount,

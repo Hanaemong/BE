@@ -12,6 +12,7 @@ import com.hana.hanalink.team.repository.TeamRepository;
 import com.hana.hanalink.transaction.domain.Transaction;
 import com.hana.hanalink.transaction.domain.TransactionType;
 import com.hana.hanalink.transaction.dto.request.TransactionReq;
+import com.hana.hanalink.transaction.dto.response.PaymentCardResponse;
 import com.hana.hanalink.transaction.dto.response.TransactionDetailRes;
 import com.hana.hanalink.transaction.dto.response.TransactionRes;
 import com.hana.hanalink.transaction.repository.TransactionRepository;
@@ -35,6 +36,11 @@ public class TransactionService {
     public TransactionDetailRes getTransHistory(Long teamId){
 
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+
+        if (meetingAccount == null) {
+            throw new EntityNotFoundException();
+        }
+
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
         List<Transaction> transactions = transactionRepository.findByAccountTo_AccountId(account.getAccountId());
 
@@ -49,21 +55,29 @@ public class TransactionService {
 
     }
 
-    public Long paymentCard(Long teamId, MemberDetails member) {
+    public PaymentCardResponse paymentCard(Long teamId, MemberDetails member) {
 
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+
+        if (meetingAccount == null) {
+            throw new EntityNotFoundException();
+        }
+
         Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
+        String paidStore = PaymentTestData.getRandomTransTo();
+        Long paidAmount = PaymentTestData.getRandomAmount();
 
         Transaction transaction = Transaction.builder()
-                .amount(PaymentTestData.getRandomAmount())
+                .amount(paidAmount)
                 .transFrom(member.getMemberName())
-                .transTo(PaymentTestData.getRandomTransTo())
+                .transTo(paidStore)
                 .accountFrom(myAccount)
                 .accountTo(meetingAccount.getAccount())
                 .type(TransactionType.PAYMENT)
                 .build();
 
-        return transactionRepository.save(transaction).getTransId();
+        transactionRepository.save(transaction);
+        return new PaymentCardResponse(paidStore, paidAmount);
     }
 
     public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {

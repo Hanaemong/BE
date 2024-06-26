@@ -49,7 +49,7 @@ public class Transaction extends BaseEntity {
                 .memberName(member.getName())
                 .memberGender(member.getGender())
                 .amount(amount)
-                .memberImg(member.getProfile())
+                .memberProfile(member.getProfile())
                 .type(type)
                 .build();
     }

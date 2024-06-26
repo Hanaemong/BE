@@ -1,5 +1,6 @@
 package com.hana.hanalink.teammember.controller;
 
+import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import com.hana.hanalink.teammember.service.TeamMemberService;
@@ -20,7 +21,7 @@ public class TeamMemberController {
     private final TeamMemberService teamMemberService;
 
     @GetMapping("/teamMember/{teamId}")
-    public List<TeamMemberRes> getTeamMemberList(@PathVariable("teamId") Long teamId, @AuthenticationPrincipal MemberDetails member) {
-        return teamMemberService.getTeamMembers(teamId,member.getMemberGender(),member.getMemberProfile());
+    public SuccessResponse<List<TeamMemberRes>> getTeamMemberList(@PathVariable("teamId") Long teamId, @AuthenticationPrincipal MemberDetails member) {
+        return SuccessResponse.success(teamMemberService.getTeamMembers(teamId,member.getMemberGender(),member.getMemberProfile()));
     }
 }
