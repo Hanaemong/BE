@@ -34,6 +34,8 @@ public class MemberDetails implements UserDetails {
 
     public String getMemberProfile(){ return member.getProfile(); }
 
+    public String getMemberFcmToken(){ return member.getFcmToken(); }
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();

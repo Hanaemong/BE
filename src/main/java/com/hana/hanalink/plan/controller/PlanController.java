@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class PlanController {
 
     private final PlanService planService;
+
     @PostMapping("/plan/{teamId}")
     public SuccessResponse<Long> postPlan(@PathVariable("teamId") Long teamId, @RequestBody PlanPostReq planPostReq){
         return SuccessResponse.success(planService.postPlan(teamId,planPostReq));

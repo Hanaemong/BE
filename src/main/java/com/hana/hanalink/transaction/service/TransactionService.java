@@ -4,6 +4,7 @@ import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.common.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
+import com.hana.hanalink.common.service.FirebaseFcmService;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
 import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
 import com.hana.hanalink.member.domain.MemberDetails;
@@ -32,6 +33,8 @@ public class TransactionService {
     private final MeetingAccountRepository meetingAccountRepository;
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
+
+    private final FirebaseFcmService firebaseFcmService;
 
     public TransactionDetailRes getTransHistory(Long teamId){
 
@@ -77,6 +80,9 @@ public class TransactionService {
                 .build();
 
         transactionRepository.save(transaction);
+
+        /*큐알코드 결제시 지출 내역 푸시알림*/
+        firebaseFcmService.sendTargetMessage(member.getMemberFcmToken(),paidAmount+"결제 완료 \uD83D\uDCB8",paidStore+"에서 결제가 완료되었어요!");
         return new PaymentCardResponse(paidStore, paidAmount);
     }
 
