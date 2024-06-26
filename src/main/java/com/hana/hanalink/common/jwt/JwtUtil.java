@@ -29,7 +29,6 @@ public class JwtUtil {
                 .compact();
     }
 
-
     public Boolean isExpired(String token) {
         return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token)
                 .getBody().getExpiration().before(new Date());

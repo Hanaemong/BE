@@ -7,6 +7,4 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByPhone(String phone);
-
-    Optional<Member> findByPassword(String password);
 }

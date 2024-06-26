@@ -26,7 +26,13 @@ public class MemberDetails implements UserDetails {
         return member.getPhone();
     }
 
+    public Long getMemberId(){ return member.getMemberId(); }
+
     public String getMemberName(){ return member.getName(); }
+
+    public String getMemberGender(){ return member.getGender(); }
+
+    public String getMemberProfile(){ return member.getProfile(); }
 
     @Override
     public boolean isAccountNonExpired() {

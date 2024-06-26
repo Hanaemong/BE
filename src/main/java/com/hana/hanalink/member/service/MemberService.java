@@ -2,7 +2,6 @@ package com.hana.hanalink.member.service;
 
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
-import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.member.dto.request.JoinRequest;
 import com.hana.hanalink.member.dto.request.LoginRequest;
 import com.hana.hanalink.member.dto.response.LoginResponse;
@@ -24,7 +23,6 @@ public class MemberService {
     private final SiGunGuRepository siGunGuRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final MemberDetailsService memberDetailsService;
 
     public void join(JoinRequest request) {
         memberRepository.findByPhone(request.phone()).ifPresent(member -> {
@@ -32,11 +30,6 @@ public class MemberService {
         });
 
         String encodedPassword = passwordEncoder.encode(request.password());
-
-//        if(memberRepository.findAll().stream()
-//                .anyMatch(member -> passwordEncoder.matches(request.password(), member.getPassword()))){
-//            throw new PasswordNotFoundException("Password already exists");
-//        }
 
         SiGun siGun = siGunRepository.findById(request.siGunId())
                 .orElseThrow(() -> new SiGunIdNotFoundException("Invalid siGunId"));
