@@ -96,7 +96,7 @@ public class MemberService {
 
         verificationCodes.put(request.phone(), code);
 
-        return new MemberMessageResponse(code);
+        return new MemberMessageResponse();
     }
 
     public MemberMsgCheckResponse memberMsgCheck(MemberMsgCheckRequest request) {
