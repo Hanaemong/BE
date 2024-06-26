@@ -1,5 +1,8 @@
 package com.hana.hanalink.common.jwt;
 
+import com.hana.hanalink.member.domain.Member;
+import com.hana.hanalink.member.domain.MemberDetails;
+import com.hana.hanalink.member.service.MemberDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,6 +25,8 @@ import java.util.Collections;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final MemberDetailsService memberDetailsService;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -39,9 +45,13 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        Long memberId = jwtUtil.getAuthValue(token, Long.class);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId, null,
+
+        String phone = jwtUtil.getAuthValue(token, String.class);
+
+        MemberDetails memberDetails = (MemberDetails) memberDetailsService.loadUserByUsername(phone);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(memberDetails, null,
                 Collections.singleton(new SimpleGrantedAuthority("USER")));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
