@@ -3,7 +3,11 @@ package com.hana.hanalink.member.controller;
 import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.member.dto.request.JoinRequest;
 import com.hana.hanalink.member.dto.request.LoginRequest;
+import com.hana.hanalink.member.dto.request.MemberMessageRequest;
+import com.hana.hanalink.member.dto.request.MemberMsgCheckRequest;
 import com.hana.hanalink.member.dto.response.LoginResponse;
+import com.hana.hanalink.member.dto.response.MemberMessageResponse;
+import com.hana.hanalink.member.dto.response.MemberMsgCheckResponse;
 import com.hana.hanalink.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,5 +30,17 @@ public class MemberController {
     @PostMapping("/login")
     public SuccessResponse<LoginResponse> login(@RequestBody LoginRequest request) {
         return SuccessResponse.success(memberService.login(request));
+    }
+
+    @PostMapping("/message")
+    public SuccessResponse<MemberMessageResponse> memberMessage(@RequestBody MemberMessageRequest memberMessageRequest) {
+        MemberMessageResponse memberMessageResponse = memberService.memberMessage(memberMessageRequest);
+        return SuccessResponse.success(memberMessageResponse);
+    }
+
+    @PostMapping("/messageCheck")
+    public SuccessResponse<MemberMsgCheckResponse> memberMsgCheck(@RequestBody MemberMsgCheckRequest memberMsgCheckRequest) {
+        MemberMsgCheckResponse memberMsgCheckResponse = memberService.memberMsgCheck(memberMsgCheckRequest);
+        return SuccessResponse.success(memberMsgCheckResponse);
     }
 }
