@@ -34,7 +34,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     //jwt
@@ -42,6 +41,9 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
     //sms
     implementation 'net.nurigo:sdk:4.3.0'
+    //firebase
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 
 tasks.named('test') {

@@ -2,8 +2,11 @@ package com.hana.hanalink.transaction.domain;
 
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;
+import com.hana.hanalink.member.domain.Member;
+import com.hana.hanalink.transaction.dto.response.TransactionRes;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Transaction extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,10 +35,22 @@ public class Transaction extends BaseEntity {
     private TransactionType type;
 
     @ManyToOne
-    @JoinColumn(name = "account_to_id", nullable = false)
+    @JoinColumn(name = "account_to_id")
     private Account accountTo;
 
     @ManyToOne
     @JoinColumn(name = "account_from_id", nullable = false)
     private Account accountFrom;
+
+
+    public TransactionRes toTransMember(Member member) {
+        return TransactionRes.builder()
+                .memberGender(member.getGender())
+                .memberName(member.getName())
+                .memberGender(member.getGender())
+                .amount(amount)
+                .memberImg(member.getProfile())
+                .type(type)
+                .build();
+    }
 }
