@@ -6,19 +6,25 @@ import com.hana.hanalink.common.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
 import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
-import com.hana.hanalink.member.domain.Member;
+import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.repository.TeamRepository;
 import com.hana.hanalink.transaction.domain.Transaction;
 import com.hana.hanalink.transaction.domain.TransactionType;
+import com.hana.hanalink.transaction.dto.request.TransactionReq;
+import com.hana.hanalink.transaction.dto.response.TransactionDetailRes;
+import com.hana.hanalink.transaction.dto.response.TransactionRes;
 import com.hana.hanalink.transaction.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -26,33 +32,53 @@ public class TransactionService {
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
 
-    public void getTransHistory(Long teamId){
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
+    public TransactionDetailRes getTransHistory(Long teamId){
+
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
         List<Transaction> transactions = transactionRepository.findByAccountTo_AccountId(account.getAccountId());
 
-//        for (Transaction transaction:transactions) {
-//            transaction.getAccountTo().getAccountId()
-//        }
+        List<TransactionRes> transactionResList = transactions.stream().map(trans -> (
+                trans.toTransMember(trans.getAccountTo().getMember()))).toList();
 
+        return TransactionDetailRes.builder()
+                .balance(account.getBalance()) //잔액
+                .accountNumber(meetingAccount.getMeetingAccountNumber()) // 모임통장 고유번호
+                .transactionResList(transactionResList.isEmpty() ? Collections.emptyList() : transactionResList)
+                .build();
 
     }
 
-    public Long paymentCard(Long teamId,Long memberId) {
+    public Long paymentCard(Long teamId, MemberDetails member) {
 
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
-        Account myAccount = accountRepository.findAccountByMember_MemberId(memberId);
-        //Member member = memberRepository.findById(memberId);
-        //Member member = memberRepository.findById(meetingAccount.memberId);
+        Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
 
         Transaction transaction = Transaction.builder()
                 .amount(PaymentTestData.getRandomAmount())
-                .transFrom(new Member().getName())
+                .transFrom(member.getMemberName())
                 .transTo(PaymentTestData.getRandomTransTo())
                 .accountFrom(myAccount)
                 .accountTo(meetingAccount.getAccount())
                 .type(TransactionType.PAYMENT)
+                .build();
+
+        return transactionRepository.save(transaction).getTransId();
+    }
+
+    public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {
+
+        MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
+        Account myAccount = accountRepository.findById(transactionReq.accountId()).orElseThrow(EntityNotFoundException::new);
+
+        Transaction transaction = Transaction.builder()
+                .amount(transactionReq.amount())
+                .transFrom(member.getMemberName())
+                .transTo(team.getTeamName())
+                .accountFrom(myAccount)
+                .accountTo(meetingAccount.getAccount())
+                .type(TransactionType.TRANSFER)
                 .build();
 
         return transactionRepository.save(transaction).getTransId();
