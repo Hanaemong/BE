@@ -34,8 +34,8 @@ public class MemberController {
 
     @PostMapping("/message")
     public SuccessResponse<MemberMessageResponse> memberMessage(@RequestBody MemberMessageRequest memberMessageRequest) {
-        MemberMessageResponse memberMessageResponse = memberService.memberMessage(memberMessageRequest);
-        return SuccessResponse.success(memberMessageResponse);
+        memberService.memberMessage(memberMessageRequest);
+        return SuccessResponse.successWithNoData();
     }
 
     @PostMapping("/messageCheck")
