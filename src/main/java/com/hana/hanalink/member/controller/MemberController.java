@@ -1,10 +1,8 @@
 package com.hana.hanalink.member.controller;
 
 import com.hana.hanalink.common.dto.SuccessResponse;
-import com.hana.hanalink.member.dto.request.JoinRequest;
-import com.hana.hanalink.member.dto.request.LoginRequest;
-import com.hana.hanalink.member.dto.request.MemberMessageRequest;
-import com.hana.hanalink.member.dto.request.MemberMsgCheckRequest;
+import com.hana.hanalink.member.dto.request.*;
+import com.hana.hanalink.member.dto.response.CheckLocationResponse;
 import com.hana.hanalink.member.dto.response.LoginResponse;
 import com.hana.hanalink.member.dto.response.MemberMessageResponse;
 import com.hana.hanalink.member.dto.response.MemberMsgCheckResponse;
@@ -14,12 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+
 
     @PostMapping("/join")
     public SuccessResponse<LoginResponse> join(@RequestBody JoinRequest request) {
@@ -42,5 +42,11 @@ public class MemberController {
     public SuccessResponse<MemberMsgCheckResponse> memberMsgCheck(@RequestBody MemberMsgCheckRequest memberMsgCheckRequest) {
         MemberMsgCheckResponse memberMsgCheckResponse = memberService.memberMsgCheck(memberMsgCheckRequest);
         return SuccessResponse.success(memberMsgCheckResponse);
+    }
+
+    @PostMapping("/regionCheck")
+    public Mono<SuccessResponse<CheckLocationResponse>> checkLocation(@RequestBody CheckLocationRequest request){
+        return memberService.checkLocation(request.latitude(), request.longitude(), request.siGunId(), request.siGunGuId())
+                .map(SuccessResponse::success);
     }
 }
