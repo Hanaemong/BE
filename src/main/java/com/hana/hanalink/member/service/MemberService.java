@@ -3,10 +3,7 @@ package com.hana.hanalink.member.service;
 import com.hana.hanalink.common.geocoding.GeocodingUtil;
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
-import com.hana.hanalink.member.dto.request.JoinRequest;
-import com.hana.hanalink.member.dto.request.LoginRequest;
-import com.hana.hanalink.member.dto.request.MemberMessageRequest;
-import com.hana.hanalink.member.dto.request.MemberMsgCheckRequest;
+import com.hana.hanalink.member.dto.request.*;
 import com.hana.hanalink.member.dto.response.CheckLocationResponse;
 import com.hana.hanalink.member.dto.response.LoginResponse;
 import com.hana.hanalink.member.dto.response.MemberMessageResponse;
@@ -17,8 +14,6 @@ import com.hana.hanalink.sigun.domain.SiGun;
 import com.hana.hanalink.sigun.repository.SiGunRepository;
 import com.hana.hanalink.sigungu.domain.SiGunGu;
 import com.hana.hanalink.sigungu.repository.SiGunGuRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -27,6 +22,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -57,10 +53,10 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(request.password());
 
         SiGun siGun = siGunRepository.findById(request.siGunId())
-                .orElseThrow(() -> new SiGunIdNotFoundException("Invalid siGunId"));
+                .orElseThrow(() -> new SiGunIdNotFoundException());
 
         SiGunGu siGunGu = siGunGuRepository.findById(request.siGunGuId())
-                .orElseThrow(() -> new SiGunGuIdNotFoundException("Invalid siGunGuId"));
+                .orElseThrow(() -> new SiGunGuIdNotFoundException());
 
         Member member = Member.builder()
                 .name(request.name())
@@ -120,9 +116,9 @@ public class MemberService {
         return geocodingUtil.getAddress(latitude, longitude)
                 .map(address -> {
                     SiGun siGun = siGunRepository.findById(siGunId)
-                            .orElseThrow(() -> new SiGunIdNotFoundException("Invalid siGunId"));
+                            .orElseThrow(() -> new SiGunIdNotFoundException());
                     SiGunGu siGunGu = siGunGuRepository.findById(siGunGuId)
-                            .orElseThrow(() -> new SiGunGuIdNotFoundException("Invalid siGunGuId"));
+                            .orElseThrow(() -> new SiGunGuIdNotFoundException());
 
                     String siGunName = siGun.getSiGun();
                     String siGunGuName = siGunGu.getSiGunGu();
@@ -132,5 +128,23 @@ public class MemberService {
 
                     return new CheckLocationResponse(match, address, region);
                 });
+    }
+
+    @Transactional
+    public void changeRegion(ChangeRegionRequest request, String authenticatedPhone) {
+        Member member = memberRepository.findById(request.memberId())
+                .orElseThrow(() -> new MemberNotFoundException());
+
+        if (!member.getPhone().equals(authenticatedPhone)) {
+            throw new UnauthorizedException();
+        }
+
+        SiGun siGun = siGunRepository.findById(request.siGunId())
+                .orElseThrow(() -> new SiGunIdNotFoundException());
+
+        SiGunGu siGunGu = siGunGuRepository.findById(request.siGunGuId())
+                .orElseThrow(() -> new SiGunGuIdNotFoundException());
+
+        member.setSiGunGu(siGunGu);
     }
 }
