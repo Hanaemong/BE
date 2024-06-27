@@ -1,11 +1,13 @@
 package com.hana.hanalink.member.service;
 
+import com.hana.hanalink.common.geocoding.GeocodingUtil;
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.member.dto.request.JoinRequest;
 import com.hana.hanalink.member.dto.request.LoginRequest;
 import com.hana.hanalink.member.dto.request.MemberMessageRequest;
 import com.hana.hanalink.member.dto.request.MemberMsgCheckRequest;
+import com.hana.hanalink.member.dto.response.CheckLocationResponse;
 import com.hana.hanalink.member.dto.response.LoginResponse;
 import com.hana.hanalink.member.dto.response.MemberMessageResponse;
 import com.hana.hanalink.member.dto.response.MemberMsgCheckResponse;
@@ -15,6 +17,8 @@ import com.hana.hanalink.sigun.domain.SiGun;
 import com.hana.hanalink.sigun.repository.SiGunRepository;
 import com.hana.hanalink.sigungu.domain.SiGunGu;
 import com.hana.hanalink.sigungu.repository.SiGunGuRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -23,6 +27,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.Random;
@@ -37,6 +42,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final DefaultMessageService messageService;
+    private final GeocodingUtil geocodingUtil;
 
     @Value("${coolsms.number.from}")
     private String from;
@@ -107,5 +113,24 @@ public class MemberService {
         } else {
             return new MemberMsgCheckResponse("인증번호 불일치");
         }
+    }
+
+    // 위도, 경도를 주소로 변환 / 시군, 시군구와 일치하는지 확인
+    public Mono<CheckLocationResponse> checkLocation(double latitude, double longitude, Long siGunId, Long siGunGuId){
+        return geocodingUtil.getAddress(latitude, longitude)
+                .map(address -> {
+                    SiGun siGun = siGunRepository.findById(siGunId)
+                            .orElseThrow(() -> new SiGunIdNotFoundException("Invalid siGunId"));
+                    SiGunGu siGunGu = siGunGuRepository.findById(siGunGuId)
+                            .orElseThrow(() -> new SiGunGuIdNotFoundException("Invalid siGunGuId"));
+
+                    String siGunName = siGun.getSiGun();
+                    String siGunGuName = siGunGu.getSiGunGu();
+                    String region = siGunName + " " + siGunGuName;
+
+                    boolean match = address.contains(siGunName) && address.contains(siGunGuName);
+
+                    return new CheckLocationResponse(match, address, region);
+                });
     }
 }
