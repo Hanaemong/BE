@@ -1,5 +1,8 @@
 package com.hana.hanalink.member.service;
 
+import com.hana.hanalink.account.domain.Account;
+import com.hana.hanalink.account.repository.AccountRepository;
+import com.hana.hanalink.account.util.AccountNumberGenerator;
 import com.hana.hanalink.common.geocoding.GeocodingUtil;
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
@@ -39,12 +42,14 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final DefaultMessageService messageService;
     private final GeocodingUtil geocodingUtil;
+    private final AccountRepository accountRepository;
 
     @Value("${coolsms.number.from}")
     private String from;
 
     private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
 
+    @Transactional
     public void join(JoinRequest request) {
         memberRepository.findByPhone(request.phone()).ifPresent(member -> {
             throw new PhoneExistsException("Phone number already in use");
@@ -69,6 +74,28 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+
+        createAccountForMember(member);
+    }
+
+    private void createAccountForMember(Member member){
+        Account account = Account.builder()
+                .accountName(generateRandomAccountName())
+                .accountNumber(AccountNumberGenerator.generateAccountNumber())
+                .balance(0L)
+                .bank("하나은행")
+                .member(member)
+                .build();
+
+        accountRepository.save(account);
+
+    }
+
+    private String generateRandomAccountName(){
+        String[] accountNames = {"영하나플러스 통장", "주거래하나 통장", "하나플러스 통장"};
+        Random random = new Random();
+        int index = random.nextInt(accountNames.length);
+        return accountNames[index];
     }
 
     public LoginResponse login(LoginRequest request){
