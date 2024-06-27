@@ -7,11 +7,10 @@ import com.hana.hanalink.member.dto.response.LoginResponse;
 import com.hana.hanalink.member.dto.response.MemberMessageResponse;
 import com.hana.hanalink.member.dto.response.MemberMsgCheckResponse;
 import com.hana.hanalink.member.service.MemberService;
+import com.hana.hanalink.member.domain.MemberDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -48,5 +47,11 @@ public class MemberController {
     public Mono<SuccessResponse<CheckLocationResponse>> checkLocation(@RequestBody CheckLocationRequest request){
         return memberService.checkLocation(request.latitude(), request.longitude(), request.siGunId(), request.siGunGuId())
                 .map(SuccessResponse::success);
+    }
+
+    @PutMapping("/regionChange")
+    public SuccessResponse<Void> changeRegion(@RequestBody ChangeRegionRequest request, @AuthenticationPrincipal MemberDetails memberDetails){
+        memberService.changeRegion(request, memberDetails.getUsername());
+        return SuccessResponse.successWithNoData();
     }
 }

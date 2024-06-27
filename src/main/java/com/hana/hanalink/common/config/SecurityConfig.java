@@ -34,7 +34,11 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/v1/member/**").permitAll()
+                                .requestMatchers("/api/v1/member/login",
+                                        "/api/v1/member/join",
+                                        "/api/v1/member/message",
+                                        "/api/v1/member/messageCheck",
+                                        "/api/v1/member/regionCheck").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
