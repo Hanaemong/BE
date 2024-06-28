@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MeetingAccountRepository extends JpaRepository<MeetingAccount,Long> {
 
-    MeetingAccount findMeetingAccountByTeam_TeamId(Long teamId);
 }
