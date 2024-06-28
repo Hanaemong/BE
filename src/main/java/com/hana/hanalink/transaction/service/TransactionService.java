@@ -39,12 +39,11 @@ public class TransactionService {
 
     public TransactionDetailRes getTransHistory(Long teamId){
 
-        MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
 
-        if (meetingAccount == null) {
-            throw new EntityNotFoundException();
-        }
+        Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new).getMeetingAccount().getMeetingAccountId();
+
+        MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(EntityNotFoundException::new);
 
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
         List<Transaction> transactions = transactionRepository.findByAccountTo_AccountId(account.getAccountId());
@@ -62,12 +61,6 @@ public class TransactionService {
     }
 
     public PaymentCardResponse paymentCard(Long teamId, MemberDetails member) {
-
-//        MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
-//
-//        if (meetingAccount == null) {
-//            throw new EntityNotFoundException();
-//        }
 
         Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
         String paidStore = PaymentTestData.getRandomTransTo();
@@ -92,7 +85,10 @@ public class TransactionService {
 
     public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {
 
-        MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+        Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new).getMeetingAccount().getMeetingAccountId();
+
+        MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(EntityNotFoundException::new);
+
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
         Account myAccount = accountRepository.findById(transactionReq.accountId()).orElseThrow(EntityNotFoundException::new);
 
