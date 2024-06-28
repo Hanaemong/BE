@@ -2,10 +2,7 @@ package com.hana.hanalink.member.controller;
 
 import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.member.dto.request.*;
-import com.hana.hanalink.member.dto.response.CheckLocationResponse;
-import com.hana.hanalink.member.dto.response.LoginResponse;
-import com.hana.hanalink.member.dto.response.MemberMessageResponse;
-import com.hana.hanalink.member.dto.response.MemberMsgCheckResponse;
+import com.hana.hanalink.member.dto.response.*;
 import com.hana.hanalink.member.service.MemberService;
 import com.hana.hanalink.member.domain.MemberDetails;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +15,6 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
 
     @PostMapping("/join")
     public SuccessResponse<LoginResponse> join(@RequestBody JoinRequest request) {
@@ -53,5 +49,11 @@ public class MemberController {
     public SuccessResponse<Void> changeRegion(@RequestBody ChangeRegionRequest request, @AuthenticationPrincipal MemberDetails memberDetails){
         memberService.changeRegion(request, memberDetails.getUsername());
         return SuccessResponse.successWithNoData();
+    }
+
+    @GetMapping
+    public SuccessResponse<MemberResponse> getMember(@AuthenticationPrincipal MemberDetails memberDetails){
+        MemberResponse member = memberService.getMemberByPhone(memberDetails.getUsername());
+        return SuccessResponse.success(member);
     }
 }

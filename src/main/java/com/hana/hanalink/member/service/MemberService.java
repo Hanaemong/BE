@@ -7,10 +7,7 @@ import com.hana.hanalink.common.geocoding.GeocodingUtil;
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.member.dto.request.*;
-import com.hana.hanalink.member.dto.response.CheckLocationResponse;
-import com.hana.hanalink.member.dto.response.LoginResponse;
-import com.hana.hanalink.member.dto.response.MemberMessageResponse;
-import com.hana.hanalink.member.dto.response.MemberMsgCheckResponse;
+import com.hana.hanalink.member.dto.response.*;
 import com.hana.hanalink.member.exception.*;
 import com.hana.hanalink.member.repository.MemberRepository;
 import com.hana.hanalink.sigun.domain.SiGun;
@@ -82,7 +79,7 @@ public class MemberService {
         Account account = Account.builder()
                 .accountName(generateRandomAccountName())
                 .accountNumber(AccountNumberGenerator.generateAccountNumber())
-                .balance(0L)
+                .balance(500000L)
                 .bank("하나은행")
                 .member(member)
                 .build();
@@ -173,5 +170,19 @@ public class MemberService {
                 .orElseThrow(() -> new SiGunGuIdNotFoundException());
 
         member.setSiGunGu(siGunGu);
+    }
+
+    public MemberResponse getMemberByPhone(String phone){
+        Member member = memberRepository.findByPhone(phone)
+                .orElseThrow(() -> new MemberNotFoundException());
+
+        return new MemberResponse(
+                member.getName(),
+                member.getPhone(),
+                member.getGender(),
+                member.getProfile(),
+                member.getSiGunGu().getSiGun().getSiGun(),
+                member.getSiGunGu().getSiGunGu()
+        );
     }
 }
