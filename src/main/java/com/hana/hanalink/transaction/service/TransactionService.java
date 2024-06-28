@@ -77,7 +77,7 @@ public class TransactionService {
                 .transFrom(member.getMemberName())
                 .transTo(paidStore)
                 .accountFrom(myAccount)
-                .accountTo(meetingAccount.getAccount())
+                .accountTo(null)
                 .type(TransactionType.PAYMENT)
                 .build();
 
