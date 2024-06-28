@@ -17,4 +17,8 @@ public class TeamMemberService {
         return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(memberGender,memberProfile)
                 ).toList();
     }
+
+    public void deleteTeamMember(Long teamMemberId) {
+        teamMemberRepository.deleteById(teamMemberId);
+    }
 }
