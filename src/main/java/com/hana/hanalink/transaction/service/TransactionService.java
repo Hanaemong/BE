@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,16 +38,16 @@ public class TransactionService {
 
     private final FirebaseFcmService firebaseFcmService;
 
-    public TransactionDetailRes getTransHistory(Long teamId){
+    public TransactionDetailRes getTransHistory(Long teamId, YearMonth date){
 
+        /*모임을 거쳐서 모임통장 정보 가져오기*/
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-
         Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new).getMeetingAccount().getMeetingAccountId();
-
         MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(EntityNotFoundException::new);
 
+        /*년,월 별로 거래 내역 가져오기*/
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
-        List<Transaction> transactions = transactionRepository.findByAccountTo_AccountId(account.getAccountId());
+        List<Transaction> transactions = transactionRepository.findByAccountTo_AccountIdAndYearMonth(account.getAccountId(),date.getYear(),date.getMonthValue());
 
         List<TransactionRes> transactionResList = transactions.stream().map(trans -> (
                 trans.toTransMember(trans.getAccountTo().getMember()))).toList();
@@ -60,11 +61,15 @@ public class TransactionService {
 
     }
 
-    public PaymentCardResponse paymentCard(Long teamId, MemberDetails member) {
+    public PaymentCardResponse paymentCard(MemberDetails member) {
 
         Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
+
         String paidStore = PaymentTestData.getRandomTransTo();
         Long paidAmount = PaymentTestData.getRandomAmount();
+
+        /*모임 통장 계좌 출금*/
+        myAccountWithdraw(myAccount,paidAmount);
 
         Transaction transaction = Transaction.builder()
                 .amount(paidAmount)
@@ -86,11 +91,13 @@ public class TransactionService {
     public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {
 
         Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new).getMeetingAccount().getMeetingAccountId();
-
         MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(EntityNotFoundException::new);
 
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
         Account myAccount = accountRepository.findById(transactionReq.accountId()).orElseThrow(EntityNotFoundException::new);
+
+        /*내 계좌 출금*/
+        myAccountWithdraw(myAccount,transactionReq.amount());
 
         Transaction transaction = Transaction.builder()
                 .amount(transactionReq.amount())
@@ -102,5 +109,11 @@ public class TransactionService {
                 .build();
 
         return transactionRepository.save(transaction).getTransId();
+    }
+
+    /*계좌 출금*/
+    public void myAccountWithdraw(Account account,Long amount) {
+        account.withDraw(amount);
+        accountRepository.save(account);
     }
 }

@@ -37,4 +37,8 @@ public class Account extends BaseEntity {
     public void changeAccount(Long id) {
         this.accountId = id;
     }
+
+    public void withDraw(Long amount) {
+        this.balance -= amount;
+    }
 }
