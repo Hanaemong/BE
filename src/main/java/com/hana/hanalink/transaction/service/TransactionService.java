@@ -39,6 +39,7 @@ public class TransactionService {
     public TransactionDetailRes getTransHistory(Long teamId){
 
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
 
         if (meetingAccount == null) {
             throw new EntityNotFoundException();
@@ -53,6 +54,7 @@ public class TransactionService {
         return TransactionDetailRes.builder()
                 .balance(account.getBalance()) //잔액
                 .accountNumber(meetingAccount.getMeetingAccountNumber()) // 모임통장 고유번호
+                .teamName(team.getTeamName())
                 .transactionResList(transactionResList.isEmpty() ? Collections.emptyList() : transactionResList)
                 .build();
 
