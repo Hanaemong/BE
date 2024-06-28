@@ -5,6 +5,6 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record TransactionDetailRes(String accountNumber, long balance, List<TransactionRes> transactionResList) {
+public record TransactionDetailRes(String accountNumber, long balance, String teamName, List<TransactionRes> transactionResList) {
 
 }
