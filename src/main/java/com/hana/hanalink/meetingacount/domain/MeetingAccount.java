@@ -21,10 +21,6 @@ public class MeetingAccount extends BaseEntity {
     private String meetingAccountNumber;
 
     @OneToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
 }
