@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,11 +63,11 @@ public class TransactionService {
 
     public PaymentCardResponse paymentCard(Long teamId, MemberDetails member) {
 
-        MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
-
-        if (meetingAccount == null) {
-            throw new EntityNotFoundException();
-        }
+//        MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByTeam_TeamId(teamId);
+//
+//        if (meetingAccount == null) {
+//            throw new EntityNotFoundException();
+//        }
 
         Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
         String paidStore = PaymentTestData.getRandomTransTo();
@@ -85,7 +86,8 @@ public class TransactionService {
 
         /*큐알코드 결제시 지출 내역 푸시알림*/
         firebaseFcmService.sendTargetMessage(member.getMemberFcmToken(),paidAmount+"결제 완료 \uD83D\uDCB8",paidStore+"에서 결제가 완료되었어요!");
-        return new PaymentCardResponse(paidStore, paidAmount);
+
+        return new PaymentCardResponse(paidStore, paidAmount, LocalDateTime.now());
     }
 
     public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {

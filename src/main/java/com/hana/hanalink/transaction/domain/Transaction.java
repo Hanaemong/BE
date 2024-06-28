@@ -51,6 +51,7 @@ public class Transaction extends BaseEntity {
                 .amount(amount)
                 .memberProfile(member.getProfile())
                 .type(type)
+                .paidDate(getCreatedAt())
                 .build();
     }
 }
