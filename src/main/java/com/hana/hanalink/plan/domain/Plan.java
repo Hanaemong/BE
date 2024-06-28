@@ -1,10 +1,10 @@
 package com.hana.hanalink.plan.domain;
 
 import com.hana.hanalink.common.domain.BaseEntity;
-import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Plan extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

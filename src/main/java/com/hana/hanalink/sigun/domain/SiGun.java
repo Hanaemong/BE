@@ -17,4 +17,6 @@ public class SiGun extends BaseEntity {
 
     @Column(name = "si_gun",nullable = false)
     private String siGun;
+
+
 }

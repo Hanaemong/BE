@@ -3,15 +3,15 @@ package com.hana.hanalink.member.domain;
 import com.hana.hanalink.common.domain.BaseEntity;
 import com.hana.hanalink.sigungu.domain.SiGunGu;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "member")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +37,5 @@ public class Member extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "si_gun_gu_id")
-    private SiGunGu SiGunGu;
+    private SiGunGu siGunGu;
 }
