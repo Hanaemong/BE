@@ -17,7 +17,7 @@ public class AccountService {
 
     public AccountResponseDto getAccountByPhone(String phone){
         Member member = memberRepository.findByPhone(phone)
-                .orElseThrow(() -> new MemberNotFoundException());
+                .orElseThrow(MemberNotFoundException::new);
         Account account = accountRepository.findAccountByMember_MemberId(member.getMemberId());
 
         return new AccountResponseDto(
