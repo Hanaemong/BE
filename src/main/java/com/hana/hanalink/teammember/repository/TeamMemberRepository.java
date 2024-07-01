@@ -7,6 +7,7 @@ import com.hana.hanalink.teammember.domain.TeamMemberRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
 
@@ -16,5 +17,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
     TeamMember findTeamMemberByTeamTeamIdAndRole(Long teamId, TeamMemberRole role);
 
     List<TeamMember> findByMember(Member member);
+
+    Optional<TeamMember> findByMemberAndTeam(Member member, Team team);
 
 }
