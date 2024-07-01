@@ -3,6 +3,7 @@ package com.hana.hanalink.team.service;
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.account.util.AccountNumberGenerator;
+import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
 import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
 import com.hana.hanalink.member.domain.Member;
@@ -37,6 +38,7 @@ public class TeamService {
     private final AccountRepository accountRepository;
     private final MeetingAccountRepository meetingAccountRepository;
     private final SurveyResponseRepository surveyResponseRepository;
+    private final FirebaseFcmService firebaseFcmService;
 
     @Transactional
     public CreateTeamRes createTeam(String phone, CreateTeamReq req) {
@@ -79,6 +81,10 @@ public class TeamService {
                 .team(team)
                 .build();
         teamMemberRepository.save(teamMember);
+
+        /*fcm 모임 총무한테 가입요청 알림 발송*/
+        TeamMember chair = teamMemberRepository.findTeamMemberByTeamTeamIdAndRole(teamId,TeamMemberRole.CHAIR);
+        firebaseFcmService.sendTargetMessage(chair.getMember().getFcmToken(),"모임 수락 요청 알림",member.getName()+"님이 "+team.getTeamName()+" 모임 승인 요청하였습니다.");
     }
 
     public List<TeamRes> getTeamList(String phone) {

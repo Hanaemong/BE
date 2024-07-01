@@ -22,11 +22,13 @@ public class SurveyResponse extends BaseEntity {
     private Integer surveyCnt;
 
 
-    public void sumTotalScore(Float score){
+    public Float sumTotalScore(Float score){
         totalScore += score;
+        return totalScore;
     }
 
-    public void addSurveyCnt(){
-        surveyCnt+=1;
+    public int addSurveyCnt(){
+         surveyCnt+=1;
+         return surveyCnt;
     }
 }
