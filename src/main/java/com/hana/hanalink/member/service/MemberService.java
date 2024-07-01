@@ -185,4 +185,8 @@ public class MemberService {
                 member.getSiGunGu().getSiGunGu()
         );
     }
+
+    public boolean checkPhoneExists(String phone) {
+        return memberRepository.findByPhone(phone).isPresent();
+    }
 }
