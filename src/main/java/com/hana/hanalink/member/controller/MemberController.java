@@ -69,6 +69,6 @@ public class MemberController {
         }
 
         boolean exists = memberService.checkPhoneExists(phone);
-        return ResponseEntity.ok(SuccessResponse.success(!exists));
+        return ResponseEntity.ok(SuccessResponse.success(exists));
     }
 }
