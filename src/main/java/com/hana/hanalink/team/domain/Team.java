@@ -54,4 +54,8 @@ public class Team extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "survey_response")
     private SurveyResponse surveyResponse;
+
+    public void setScore(float score) {
+        this.score = score;
+    }
 }

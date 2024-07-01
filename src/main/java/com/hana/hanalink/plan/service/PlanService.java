@@ -1,7 +1,7 @@
 package com.hana.hanalink.plan.service;
 
 import com.hana.hanalink.common.exception.EntityNotFoundException;
-import com.hana.hanalink.common.service.FirebaseFcmService;
+import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.plan.dto.PlanPostReq;
 import com.hana.hanalink.plan.repository.PlanRepository;
 import com.hana.hanalink.team.domain.Team;
@@ -25,7 +25,7 @@ public class PlanService {
         Long planId = planRepository.save(planPostReq.toEntity(team,image)).getPlanId();
 
         if (planId != null) {
-            firebaseFcmService.sendTopicMessage(teamId,teamId.toString(),team.getTeamName()+"모임 일정 개설!!",planPostReq.planName()+"일정이 개설되었어요 ~\n 지금 바로 확인해보세요.");
+            firebaseFcmService.sendTopicMessageWithTeamImage(teamId,teamId.toString(),team.getTeamName()+"모임 일정 개설!!",planPostReq.planName()+"일정이 개설되었어요 ~\n 지금 바로 확인해보세요.");
             return  planId;
         }
 

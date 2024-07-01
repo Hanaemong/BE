@@ -1,4 +1,4 @@
-package com.hana.hanalink.common.service;
+package com.hana.hanalink.common.firebase;
 
 import com.google.firebase.messaging.*;
 import com.hana.hanalink.alarm.domain.Alarm;
@@ -33,17 +33,17 @@ public class FirebaseFcmService {
         Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
         Message msg = Message.builder().setToken(targetToken).setNotification(notification).build();
         sendMessage(msg,title,body);
-
-
     }
 
-    public void sendTopicMessage(Long teamId,String topic, String title, String body)  {
+    public void sendTopicMessageWithLogoImage(Long teamId,String topic, String title, String body)  {
+        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(null).build();
+        Message msg = Message.builder().setTopic(topic).setNotification(notification).putData("teamId",topic).build();
+        sendMessage(msg,title,body);
+    }
+    public void sendTopicMessageWithTeamImage(Long teamId,String topic, String title, String body) {
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-        this.sendTopicMessage(topic, team.getTeamName()+title, body, null);
-    }
-    public void sendTopicMessage(String topic, String title, String body, String image) {
-        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
-        Message msg = Message.builder().setTopic(topic).setNotification(notification).build();
+        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(team.getThumbNail()).build();
+        Message msg = Message.builder().setTopic(topic).setNotification(notification).putData("teamId",topic).build();
         sendMessage(msg,title,body);
     }
 

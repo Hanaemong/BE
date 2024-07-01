@@ -4,7 +4,7 @@ import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.common.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
-import com.hana.hanalink.common.service.FirebaseFcmService;
+import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
 import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
 import com.hana.hanalink.member.domain.MemberDetails;

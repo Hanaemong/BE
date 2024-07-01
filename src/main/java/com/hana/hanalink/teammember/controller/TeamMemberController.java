@@ -1,5 +1,6 @@
 package com.hana.hanalink.teammember.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.meetingacount.service.MeetingAccountService;
 import com.hana.hanalink.member.domain.MemberDetails;
@@ -42,7 +43,7 @@ public class TeamMemberController {
     }
 
     @PutMapping("/{teamMemberId}")
-    public SuccessResponse<Void> approveTeamMember(@PathVariable("teamMemberId") Long teamMemberId) {
+    public SuccessResponse<Void> approveTeamMember(@PathVariable("teamMemberId") Long teamMemberId) throws FirebaseMessagingException {
         teamMemberService.approveTeamMember(teamMemberId);
         return SuccessResponse.successWithNoData();
     }
