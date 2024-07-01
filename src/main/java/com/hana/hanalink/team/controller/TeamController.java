@@ -5,6 +5,7 @@ import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.dto.request.CreateTeamReq;
 import com.hana.hanalink.team.dto.request.JoinTeamReq;
 import com.hana.hanalink.team.dto.response.CreateTeamRes;
+import com.hana.hanalink.team.dto.response.DetailTeamRes;
 import com.hana.hanalink.team.dto.response.TeamRes;
 import com.hana.hanalink.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -39,18 +40,24 @@ public class TeamController {
 
     @GetMapping("/category")
     SuccessResponse<List<TeamRes>> getCategoryTeamList(@AuthenticationPrincipal MemberDetails member,
-                                               @RequestParam("keyword") String keyword) {
+                                                       @RequestParam("keyword") String keyword) {
         return SuccessResponse.success(teamService.getCategoryTeamList(member.getUsername(), keyword));
     }
 
     @GetMapping("/search")
     SuccessResponse<List<TeamRes>> getSearchTeamList(@AuthenticationPrincipal MemberDetails member,
-                                               @RequestParam("keyword") String keyword) {
+                                                     @RequestParam("keyword") String keyword) {
         return SuccessResponse.success(teamService.getSearchTeamList(member.getUsername(), keyword));
     }
 
     @GetMapping("/my")
     SuccessResponse<List<TeamRes>> getMyTeamList(@AuthenticationPrincipal MemberDetails member) {
         return SuccessResponse.success(teamService.getMyTeamList(member.getUsername()));
+    }
+
+    @GetMapping("/{teamId}")
+    SuccessResponse<DetailTeamRes> getDetailTeam(@AuthenticationPrincipal MemberDetails member,
+                                                 @PathVariable("teamId") Long teamId) {
+        return SuccessResponse.success(teamService.getDetailTeam(member.getUsername(), teamId));
     }
 }

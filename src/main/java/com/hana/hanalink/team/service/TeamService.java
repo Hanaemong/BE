@@ -15,6 +15,7 @@ import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.dto.request.CreateTeamReq;
 import com.hana.hanalink.team.dto.request.JoinTeamReq;
 import com.hana.hanalink.team.dto.response.CreateTeamRes;
+import com.hana.hanalink.team.dto.response.DetailTeamRes;
 import com.hana.hanalink.team.dto.response.TeamRes;
 import com.hana.hanalink.team.exception.TeamNotFoundException;
 import com.hana.hanalink.team.repository.TeamRepository;
@@ -121,6 +122,14 @@ public class TeamService {
                 .distinct()
                 .map(this::buildTeamRes)
                 .toList();
+    }
+
+    public DetailTeamRes getDetailTeam(String phone, Long teamId) {
+        Member member = getMember(phone);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        TeamMember teamMember = teamMemberRepository.findByMemberAndTeam(member, team).orElseThrow(TeamNotFoundException::new);
+
+        return new DetailTeamRes(team, teamMember.getRole());
     }
 
 
