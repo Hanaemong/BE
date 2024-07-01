@@ -20,7 +20,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.put(session.getId(), session);
 
-        Message message = Message.builder().sender(session.getId()).receiver("all").build();
+        Message message = Message.builder().sender(session.getId()).channelId("all").build();
         message.newConnect();
 
         for (WebSocketSession s : sessions.values()) {

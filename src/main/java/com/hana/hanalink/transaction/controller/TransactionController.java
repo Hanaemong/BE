@@ -7,8 +7,11 @@ import com.hana.hanalink.transaction.dto.response.PaymentCardResponse;
 import com.hana.hanalink.transaction.dto.response.TransactionDetailRes;
 import com.hana.hanalink.transaction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.YearMonth;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +22,8 @@ public class TransactionController {
 
     /*거래 내역 가져오기*/
     @GetMapping("/transaction/{teamId}")
-    public SuccessResponse<TransactionDetailRes> getTransactionHistory(@PathVariable("teamId") Long teamId){
-        return SuccessResponse.success(transactionService.getTransHistory(teamId));
+    public SuccessResponse<TransactionDetailRes> getTransactionHistory(@PathVariable("teamId") Long teamId,@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM") YearMonth date){
+        return SuccessResponse.success(transactionService.getTransHistory(teamId,date));
     }
 
     /*회비 납부하기*/
@@ -33,6 +36,6 @@ public class TransactionController {
     /*지출하기*/
     @PostMapping("/transaction/expense/{teamId}")
     public SuccessResponse<PaymentCardResponse> payMeetingAccount(@PathVariable("teamId") Long teamId, @AuthenticationPrincipal MemberDetails member) {
-        return SuccessResponse.success(transactionService.paymentCard(teamId, member));
+        return SuccessResponse.success(transactionService.paymentCard(member));
     }
 }
