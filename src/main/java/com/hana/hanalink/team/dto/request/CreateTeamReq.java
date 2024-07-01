@@ -14,7 +14,7 @@ public record CreateTeamReq(String teamName, String teamDesc, Integer capacity, 
                 .category(req.category())
                 .thumbNail(req.thumbNail())
                 .score(0.5F)
-                .SiGunGu(siGunGu)
+                .siGunGu(siGunGu)
                 .surveyResponse(surveyResponse)
                 .meetingAccount(meetingAccount)
                 .build();

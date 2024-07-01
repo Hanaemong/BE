@@ -5,10 +5,13 @@ import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.dto.request.CreateTeamReq;
 import com.hana.hanalink.team.dto.request.JoinTeamReq;
 import com.hana.hanalink.team.dto.response.CreateTeamRes;
+import com.hana.hanalink.team.dto.response.TeamRes;
 import com.hana.hanalink.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +30,10 @@ public class TeamController {
                                    @RequestBody JoinTeamReq req) {
         teamService.joinTeam(member.getUsername(), teamId, req);
         return SuccessResponse.successWithNoData();
+    }
+
+    @GetMapping("")
+    SuccessResponse<List<TeamRes>> getTeamLis(@AuthenticationPrincipal MemberDetails member) {
+        return SuccessResponse.success(teamService.getTeamList(member.getUsername()));
     }
 }

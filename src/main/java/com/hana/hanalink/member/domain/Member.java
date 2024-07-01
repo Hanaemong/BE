@@ -35,7 +35,7 @@ public class Member extends BaseEntity {
     @Column(name = "profile", nullable = false)
     private String profile;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "si_gun_gu_id")
     private SiGunGu siGunGu;
 }

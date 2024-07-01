@@ -47,9 +47,9 @@ public class Team extends BaseEntity {
     @JoinColumn(name = "meeting_account_id")
     private MeetingAccount meetingAccount;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "si_gun_gu_id")
-    private SiGunGu SiGunGu;
+    private SiGunGu siGunGu;
 
     @OneToOne
     @JoinColumn(name = "survey_response")
