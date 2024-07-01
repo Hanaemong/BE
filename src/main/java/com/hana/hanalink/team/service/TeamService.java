@@ -85,6 +85,24 @@ public class TeamService {
         return teamList.stream()
                 .map(team -> TeamRes.builder()
                         .teamId(team.getTeamId())
+                        .siGunGu(team.getSiGunGu().getSiGunGu())
+                        .teamName(team.getTeamName())
+                        .category(team.getCategory())
+                        .score(team.getScore())
+                        .thumbNail(team.getThumbNail())
+                        .memberCnt(teamMemberRepository.countByTeam(team))
+                        .build())
+                .toList();
+    }
+
+    public List<TeamRes> getCategoryTeamList(String phone, String category) {
+        Member member = memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+        List<Team> teamList = teamRepository.findBySiGunGuAndCategory(member.getSiGunGu(), category);
+
+        return teamList.stream()
+                .map(team -> TeamRes.builder()
+                        .teamId(team.getTeamId())
+                        .siGunGu(team.getSiGunGu().getSiGunGu())
                         .teamName(team.getTeamName())
                         .category(team.getCategory())
                         .score(team.getScore())

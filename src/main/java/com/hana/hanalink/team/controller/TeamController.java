@@ -36,4 +36,11 @@ public class TeamController {
     SuccessResponse<List<TeamRes>> getTeamLis(@AuthenticationPrincipal MemberDetails member) {
         return SuccessResponse.success(teamService.getTeamList(member.getUsername()));
     }
+
+    @GetMapping("/category")
+    SuccessResponse<List<TeamRes>> getTeamList(@AuthenticationPrincipal MemberDetails member,
+                                               @RequestParam("keyword") String keyword) {
+        return SuccessResponse.success(teamService.getCategoryTeamList(member.getUsername(), keyword));
+    }
+
 }
