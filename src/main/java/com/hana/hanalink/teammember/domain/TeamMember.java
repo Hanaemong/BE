@@ -6,12 +6,14 @@ import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "team_member")
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamMember extends BaseEntity {
@@ -19,7 +21,7 @@ public class TeamMember extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamMemberId;
 
-    @Column(name = "nickname",nullable = false)
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
     @Enumerated(EnumType.STRING)
