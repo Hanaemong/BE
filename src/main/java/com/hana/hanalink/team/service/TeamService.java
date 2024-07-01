@@ -24,7 +24,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -105,6 +107,18 @@ public class TeamService {
                 .map(this::buildTeamRes)
                 .toList();
     }
+
+    public List<TeamRes> getMyTeamList(String phone) {
+        Member member = getMember(phone);
+        List<TeamMember> teamMembers = teamMemberRepository.findByMember(member);
+
+        return teamMembers.stream()
+                .map(TeamMember::getTeam)
+                .distinct()
+                .map(this::buildTeamRes)
+                .toList();
+    }
+
 
     private Member getMember(String phone) {
         return memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
