@@ -8,4 +8,9 @@ import java.util.List;
 
 public interface TeamRepository extends JpaRepository<Team,Long> {
     List<Team> findBySiGunGuOrderByScoreDesc(SiGunGu sigungu);
+
+    List<Team> findBySiGunGuAndCategory(SiGunGu siGunGu, String category);
+
+    List<Team> findBySiGunGuAndTeamNameContaining(SiGunGu siGunGu, String teamName);
+
 }

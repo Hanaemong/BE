@@ -1,5 +1,6 @@
 package com.hana.hanalink.teammember.repository;
 
+import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
@@ -13,4 +14,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
     Integer countByTeam(Team team);
 
     TeamMember findTeamMemberByTeamTeamIdAndRole(Long teamId, TeamMemberRole role);
+
+    List<TeamMember> findByMember(Member member);
+
 }

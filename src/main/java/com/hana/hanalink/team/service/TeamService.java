@@ -25,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,9 +39,10 @@ public class TeamService {
     private final MeetingAccountRepository meetingAccountRepository;
     private final SurveyResponseRepository surveyResponseRepository;
     private final FirebaseFcmService firebaseFcmService;
+
     @Transactional
     public CreateTeamRes createTeam(String phone, CreateTeamReq req) {
-        Member member = memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+        Member member = getMember(phone);
         Account account = accountRepository.findAccountByMember_MemberId(member.getMemberId());
         MeetingAccount meetingAccount = MeetingAccount.builder()
                 .meetingAccountNumber(AccountNumberGenerator.generateAccountNumber())
@@ -68,7 +71,7 @@ public class TeamService {
 
     @Transactional
     public void joinTeam(String phone, Long teamId, JoinTeamReq req) {
-        Member member = memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+        Member member = getMember(phone);
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         TeamMember teamMember = TeamMember.builder()
                 .nickname("")
@@ -85,18 +88,59 @@ public class TeamService {
     }
 
     public List<TeamRes> getTeamList(String phone) {
-        Member member = memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+        Member member = getMember(phone);
         List<Team> teamList = teamRepository.findBySiGunGuOrderByScoreDesc(member.getSiGunGu());
 
         return teamList.stream()
-                .map(team -> TeamRes.builder()
-                        .teamId(team.getTeamId())
-                        .teamName(team.getTeamName())
-                        .category(team.getCategory())
-                        .score(team.getScore())
-                        .thumbNail(team.getThumbNail())
-                        .memberCnt(teamMemberRepository.countByTeam(team))
-                        .build())
+                .map(this::buildTeamRes)
                 .toList();
     }
+
+    public List<TeamRes> getCategoryTeamList(String phone, String category) {
+        Member member = getMember(phone);
+        List<Team> teamList = teamRepository.findBySiGunGuAndCategory(member.getSiGunGu(), category);
+
+        return teamList.stream()
+                .map(this::buildTeamRes)
+                .toList();
+    }
+
+    public List<TeamRes> getSearchTeamList(String phone, String teamName) {
+        Member member = getMember(phone);
+        List<Team> teamList = teamRepository.findBySiGunGuAndTeamNameContaining(member.getSiGunGu(), teamName);
+
+        return teamList.stream()
+                .map(this::buildTeamRes)
+                .toList();
+    }
+
+    public List<TeamRes> getMyTeamList(String phone) {
+        Member member = getMember(phone);
+        List<TeamMember> teamMembers = teamMemberRepository.findByMember(member);
+
+        return teamMembers.stream()
+                .map(TeamMember::getTeam)
+                .distinct()
+                .map(this::buildTeamRes)
+                .toList();
+    }
+
+
+    private Member getMember(String phone) {
+        return memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+    }
+
+    private TeamRes buildTeamRes(Team team) {
+        return TeamRes.builder()
+                .teamId(team.getTeamId())
+                .siGunGu(team.getSiGunGu().getSiGunGu())
+                .teamName(team.getTeamName())
+                .category(team.getCategory())
+                .score(team.getScore())
+                .thumbNail(team.getThumbNail())
+                .memberCnt(teamMemberRepository.countByTeam(team))
+                .build();
+    }
+
+
 }

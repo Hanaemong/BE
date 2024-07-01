@@ -38,7 +38,8 @@ public class SecurityConfig {
                                         "/api/v1/member/join",
                                         "/api/v1/member/message",
                                         "/api/v1/member/messageCheck",
-                                        "/api/v1/member/regionCheck").permitAll()
+                                        "/api/v1/member/regionCheck",
+                                        "/api/v1/member/phoneCheck").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)

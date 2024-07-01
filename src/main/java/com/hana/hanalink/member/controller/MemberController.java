@@ -6,9 +6,13 @@ import com.hana.hanalink.member.dto.response.*;
 import com.hana.hanalink.member.service.MemberService;
 import com.hana.hanalink.member.domain.MemberDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -55,5 +59,16 @@ public class MemberController {
     public SuccessResponse<MemberResponse> getMember(@AuthenticationPrincipal MemberDetails memberDetails){
         MemberResponse member = memberService.getMemberByPhone(memberDetails.getUsername());
         return SuccessResponse.success(member);
+    }
+
+    @PostMapping("/phoneCheck")
+    public ResponseEntity<SuccessResponse<Boolean>> checkPhone(@RequestBody Map<String, String> request) {
+        String phone = request.get("phone");
+        if (phone == null || phone.isEmpty()) {
+            return ResponseEntity.badRequest().body(SuccessResponse.success(false));
+        }
+
+        boolean exists = memberService.checkPhoneExists(phone);
+        return ResponseEntity.ok(SuccessResponse.success(exists));
     }
 }
