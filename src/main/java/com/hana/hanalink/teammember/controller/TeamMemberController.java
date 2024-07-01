@@ -14,20 +14,20 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/teamMember")
 public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
     private final MeetingAccountService meetingAccountService;
 
     /*모임원 조회하기*/
-    @GetMapping("/teamMember/{teamId}")
+    @GetMapping("/{teamId}")
     public SuccessResponse<List<TeamMemberRes>> getTeamMemberList(@PathVariable("teamId") Long teamId, @AuthenticationPrincipal MemberDetails member) {
-        return SuccessResponse.success(teamMemberService.getTeamMembers(teamId,member.getMemberGender(),member.getMemberProfile()));
+        return SuccessResponse.success(teamMemberService.getTeamMembers(teamId, member.getMemberGender(), member.getMemberProfile()));
     }
 
     /*모임원 내보내기*/
-    @DeleteMapping("/teamMember/{teamMemberId}")
+    @DeleteMapping("/{teamMemberId}")
     public SuccessResponse<Long> deleteTeamMember(@PathVariable("teamMemberId") Long teamMemberId) {
         teamMemberService.deleteTeamMember(teamMemberId);
         return SuccessResponse.successWithNoData();
@@ -38,6 +38,12 @@ public class TeamMemberController {
     public SuccessResponse<Long> changeTeamChairRole(@RequestBody TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
         teamMemberService.changeChairRole(teamMemberRoleChangeReq);
         meetingAccountService.changeMeetingAccount(teamMemberRoleChangeReq.fromChairId(), teamMemberRoleChangeReq.ToChairId());
+        return SuccessResponse.successWithNoData();
+    }
+
+    @PutMapping("/{teamMemberId}")
+    public SuccessResponse<Void> approveTeamMember(@PathVariable("teamMemberId") Long teamMemberId) {
+        teamMemberService.approveTeamMember(teamMemberId);
         return SuccessResponse.successWithNoData();
     }
 }
