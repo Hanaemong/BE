@@ -33,12 +33,12 @@ public class TeamController {
     }
 
     @GetMapping("")
-    SuccessResponse<List<TeamRes>> getTeamLis(@AuthenticationPrincipal MemberDetails member) {
+    SuccessResponse<List<TeamRes>> getTeamList(@AuthenticationPrincipal MemberDetails member) {
         return SuccessResponse.success(teamService.getTeamList(member.getUsername()));
     }
 
     @GetMapping("/category")
-    SuccessResponse<List<TeamRes>> getTeamList(@AuthenticationPrincipal MemberDetails member,
+    SuccessResponse<List<TeamRes>> getCategoryTeamList(@AuthenticationPrincipal MemberDetails member,
                                                @RequestParam("keyword") String keyword) {
         return SuccessResponse.success(teamService.getCategoryTeamList(member.getUsername(), keyword));
     }
@@ -49,4 +49,8 @@ public class TeamController {
         return SuccessResponse.success(teamService.getSearchTeamList(member.getUsername(), keyword));
     }
 
+    @GetMapping("/my")
+    SuccessResponse<List<TeamRes>> getMyTeamList(@AuthenticationPrincipal MemberDetails member) {
+        return SuccessResponse.success(teamService.getMyTeamList(member.getUsername()));
+    }
 }
