@@ -105,7 +105,7 @@ public class MemberService {
 
         String token = jwtUtil.generateAccessToken(member.getPhone());
 
-        return new LoginResponse(token, member.getMemberId());
+        return new LoginResponse(token, member.getMemberId(), member.getSiGunGu().getSiGunGu());
     }
 
     public MemberMessageResponse memberMessage(MemberMessageRequest request) {
