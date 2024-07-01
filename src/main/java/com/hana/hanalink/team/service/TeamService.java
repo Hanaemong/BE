@@ -14,6 +14,8 @@ import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.dto.request.CreateTeamReq;
 import com.hana.hanalink.team.dto.request.JoinTeamReq;
 import com.hana.hanalink.team.dto.response.CreateTeamRes;
+import com.hana.hanalink.team.dto.response.TeamRes;
+import com.hana.hanalink.team.exception.TeamNotFoundException;
 import com.hana.hanalink.team.repository.TeamRepository;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
@@ -21,6 +23,8 @@ import com.hana.hanalink.teammember.repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +64,33 @@ public class TeamService {
         return new CreateTeamRes();
     }
 
-    public void joinTeam(String phone, JoinTeamReq req) {
+    @Transactional
+    public void joinTeam(String phone, Long teamId, JoinTeamReq req) {
+        Member member = memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        TeamMember teamMember = TeamMember.builder()
+                .nickname("")
+                .role(TeamMemberRole.PENDING)
+                .hello(req.hello())
+                .member(member)
+                .team(team)
+                .build();
+        teamMemberRepository.save(teamMember);
+    }
 
+    public List<TeamRes> getTeamList(String phone) {
+        Member member = memberRepository.findByPhone(phone).orElseThrow(MemberNotFoundException::new);
+        List<Team> teamList = teamRepository.findBySiGunGuOrderByScoreDesc(member.getSiGunGu());
+
+        return teamList.stream()
+                .map(team -> TeamRes.builder()
+                        .teamId(team.getTeamId())
+                        .teamName(team.getTeamName())
+                        .category(team.getCategory())
+                        .score(team.getScore())
+                        .thumbNail(team.getThumbNail())
+                        .memberCnt(teamMemberRepository.countByTeam(team))
+                        .build())
+                .toList();
     }
 }

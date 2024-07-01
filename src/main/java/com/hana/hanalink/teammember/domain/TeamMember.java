@@ -49,7 +49,7 @@ public class TeamMember extends BaseEntity {
                 .build();
     }
 
-    public void changeChairRole(TeamMemberRole role) {
+    public void changeRole(TeamMemberRole role) {
         this.role = role;
     }
 }

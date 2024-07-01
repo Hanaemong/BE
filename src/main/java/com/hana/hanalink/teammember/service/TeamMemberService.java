@@ -5,9 +5,11 @@ import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import com.hana.hanalink.teammember.dto.TeamMemberRoleChangeReq;
+import com.hana.hanalink.teammember.exception.TeamMemberNotFoundException;
 import com.hana.hanalink.teammember.repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,13 +28,21 @@ public class TeamMemberService {
         teamMemberRepository.deleteById(teamMemberId);
     }
 
+    @Transactional
     public void changeChairRole(TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
-        TeamMember curChair = teamMemberRepository.findById(teamMemberRoleChangeReq.fromChairId()).orElseThrow(EntityNotFoundException::new);
-        curChair.changeChairRole(TeamMemberRole.REGULAR);
-        TeamMember nextChair = teamMemberRepository.findById(teamMemberRoleChangeReq.ToChairId()).orElseThrow(EntityNotFoundException::new);
-        nextChair.changeChairRole(TeamMemberRole.CHAIR);
+        TeamMember curChair = teamMemberRepository.findById(teamMemberRoleChangeReq.fromChairId()).orElseThrow(TeamMemberNotFoundException::new);
+        curChair.changeRole(TeamMemberRole.REGULAR);
+        TeamMember nextChair = teamMemberRepository.findById(teamMemberRoleChangeReq.ToChairId()).orElseThrow(TeamMemberNotFoundException::new);
+        nextChair.changeRole(TeamMemberRole.CHAIR);
         teamMemberRepository.save(curChair);
         teamMemberRepository.save(nextChair);
+    }
+
+    @Transactional
+    public void approveTeamMember(Long teamMemberId) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
+        teamMember.changeRole(TeamMemberRole.REGULAR);
+        teamMemberRepository.save(teamMember);
     }
 
 }
