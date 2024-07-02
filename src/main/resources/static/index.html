@@ -13,7 +13,8 @@
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/sub/channel/1', function (message) {
+                var channelId = document.getElementById("channelId").value;
+                stompClient.subscribe('/sub/channel/' + channelId, function (message) {
                     showMessage(JSON.parse(message.body));
                 });
             });
@@ -29,7 +30,7 @@
         function sendMessage() {
             var message = {
                 sender: document.getElementById("sender").value,
-                channelId: "1",
+                channelId: document.getElementById("channelId").value,
                 data: document.getElementById("message").value,
                 type: "chat"
             };
@@ -53,6 +54,7 @@
     </div>
     <div>
         <input type="text" id="message" placeholder="Type a message..."/>
+        <input type="text" id="channelId" placeholder="Channel ID"/>
         <button onclick="sendMessage()">Send</button>
     </div>
     <div>
