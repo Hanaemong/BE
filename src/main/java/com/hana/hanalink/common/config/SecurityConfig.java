@@ -34,15 +34,16 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/v1/member/login",
-                                        "/api/v1/member/join",
-                                        "/api/v1/member/message",
-                                        "/api/v1/member/messageCheck",
-                                        "/api/v1/member/regionCheck",
-                                        "/api/v1/member/phoneCheck",
-                                        "/ws/**",
-                                "*").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/**").permitAll() // 모든 요청 허용
+//                                .requestMatchers("/api/v1/member/login",
+//                                        "/api/v1/member/join",
+//                                        "/api/v1/member/message",
+//                                        "/api/v1/member/messageCheck",
+//                                        "/api/v1/member/regionCheck",
+//                                        "/api/v1/member/phoneCheck",
+//                                        "/ws/**",
+//                                "*").permitAll()
+//                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
