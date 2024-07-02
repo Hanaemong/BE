@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -127,9 +128,12 @@ public class TeamService {
     public DetailTeamRes getDetailTeam(String phone, Long teamId) {
         Member member = getMember(phone);
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
-        TeamMember teamMember = teamMemberRepository.findByMemberAndTeam(member, team).orElseThrow(TeamNotFoundException::new);
 
-        return new DetailTeamRes(team, teamMember.getRole());
+        // 팀 멤버 정보 조회
+        Optional<TeamMember> teamMemberOptional = teamMemberRepository.findByMemberAndTeam(member, team);
+        TeamMemberRole role = teamMemberOptional.map(TeamMember::getRole).orElse(null);
+
+        return new DetailTeamRes(team, role);
     }
 
 
