@@ -1,5 +1,6 @@
 package com.hana.hanalink.alarm.controller;
 
+import com.hana.hanalink.alarm.domain.AlarmType;
 import com.hana.hanalink.alarm.dto.response.AlarmRes;
 import com.hana.hanalink.alarm.service.AlarmService;
 import com.hana.hanalink.common.jwt.JwtUtil;
@@ -61,8 +62,8 @@ class AlarmRestControllerTest {
         //given
         Long memberId = 1L;
         List<AlarmRes> alarms = List.of(
-                new AlarmRes("hi", "hihi", null),
-                new AlarmRes("hi", "hihi", null)
+                new AlarmRes("hi", "hihi", null,null,false, AlarmType.SURVEY),
+                new AlarmRes("hi", "hihi", null,null,false, AlarmType.SURVEY)
         );
         when(alarmService.getAlarmList(memberId)).thenReturn(alarms);
 
