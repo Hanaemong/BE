@@ -39,7 +39,9 @@ public class SecurityConfig {
                                         "/api/v1/member/message",
                                         "/api/v1/member/messageCheck",
                                         "/api/v1/member/regionCheck",
-                                        "/api/v1/member/phoneCheck").permitAll()
+                                        "/api/v1/member/phoneCheck",
+                                        "/api/v1/sigun",
+                                        "/api/v1/sigun/{siGunId}").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
