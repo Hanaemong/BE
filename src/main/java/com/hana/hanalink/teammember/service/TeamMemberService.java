@@ -50,7 +50,7 @@ public class TeamMemberService {
 
         /* fcm 모임 가입 허락된 모임원에게 알림 발송*/
         firebaseFcmService.subscribeToTopic(teamMember.getMember().getFcmToken(),teamMember.getTeam().getTeamId().toString());
-        firebaseFcmService.sendTargetMessage(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!!",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!!");
+        firebaseFcmService.sendTargetMessage(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!!",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!!",teamMember.getTeam().getTeamId());
     }
 
 }

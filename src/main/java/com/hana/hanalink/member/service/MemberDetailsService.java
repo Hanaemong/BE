@@ -5,6 +5,8 @@ import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.member.exception.MemberNotFoundException;
 import com.hana.hanalink.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,5 +22,13 @@ public class MemberDetailsService implements UserDetailsService {
         Member member = memberRepository.findByPhone(phone)
                 .orElseThrow(() -> new MemberNotFoundException());
         return new MemberDetails(member);
+    }
+
+    public MemberDetails getCurrentUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            return (MemberDetails) authentication.getPrincipal();
+        }
+        return null;
     }
 }
