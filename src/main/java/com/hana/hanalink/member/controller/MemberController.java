@@ -62,13 +62,9 @@ public class MemberController {
     }
 
     @PostMapping("/phoneCheck")
-    public ResponseEntity<SuccessResponse<Boolean>> checkPhone(@RequestBody Map<String, String> request) {
+    public SuccessResponse<Boolean> checkPhone(@RequestBody Map<String, String> request) {
         String phone = request.get("phone");
-        if (phone == null || phone.isEmpty()) {
-            return ResponseEntity.badRequest().body(SuccessResponse.success(false));
-        }
-
-        boolean exists = memberService.checkPhoneExists(phone);
-        return ResponseEntity.ok(SuccessResponse.success(exists));
+        boolean isDuplicate = memberService.checkPhoneExists(phone);
+        return SuccessResponse.success(isDuplicate);
     }
 }
