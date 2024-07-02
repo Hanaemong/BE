@@ -56,10 +56,11 @@ public class SurveyRestControllerTest {
     public void testSubmitSurvey() throws Exception {
         // Given
         Long teamId = 1L;
+        Long memberId=1L;
         SurveyRes surveyRes = SurveyRes.builder().score(4.5f).build();
         Long expectedTeamId = 1L;
 
-        Mockito.when(surveyService.submitSurvey(Mockito.eq(teamId), Mockito.any(SurveyRes.class)))
+        Mockito.when(surveyService.submitSurvey(Mockito.eq(teamId),Mockito.eq(memberId), Mockito.any(SurveyRes.class)))
                 .thenReturn(expectedTeamId);
 
         // When & Then

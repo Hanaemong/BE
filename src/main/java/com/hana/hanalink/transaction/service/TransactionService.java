@@ -61,7 +61,7 @@ public class TransactionService {
 
     }
 
-    public PaymentCardResponse paymentCard(MemberDetails member) {
+    public PaymentCardResponse paymentCard(MemberDetails member,Long teamId) {
 
         Account myAccount = accountRepository.findAccountByMember_MemberId(member.getMemberId());
 
@@ -83,7 +83,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
 
         /*큐알코드 결제시 지출 내역 푸시알림*/
-        firebaseFcmService.sendTargetMessage(member.getMemberFcmToken(),paidAmount+"결제 완료 \uD83D\uDCB8",paidStore+"에서 결제가 완료되었어요!");
+        firebaseFcmService.sendTargetMessage(member.getMemberFcmToken(),paidAmount+"결제 완료 \uD83D\uDCB8",paidStore+"에서 결제가 완료되었어요!",teamId);
 
         return new PaymentCardResponse(paidStore, paidAmount, LocalDateTime.now());
     }

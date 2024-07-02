@@ -1,9 +1,11 @@
 package com.hana.hanalink.alarm.service;
 
 import com.hana.hanalink.alarm.domain.Alarm;
+import com.hana.hanalink.alarm.domain.AlarmType;
 import com.hana.hanalink.alarm.dto.response.AlarmRes;
 import com.hana.hanalink.alarm.repository.AlarmRepository;
 import com.hana.hanalink.member.domain.Member;
+import com.hana.hanalink.team.domain.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,10 +38,9 @@ public class AlarmServiceTest {
     @DisplayName("알림 리스트 조회")
     void getAlarmListServiceTest() {
         //given
-        AlarmRes alarmRes = new AlarmRes("hi", "hihi", null);
         Member member = new Member();
         member.setMemberId(1L);
-        Alarm alarm = new Alarm(1L,"hi","hihi",member);
+        Alarm alarm = new Alarm(1L,"hi", "hihi","asdf",false, AlarmType.SURVEY,member,new Team());
 
         given(alarmRepository.findById(1L)).willReturn(Optional.of(alarm));
 
