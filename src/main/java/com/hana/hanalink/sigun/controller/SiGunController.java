@@ -1,5 +1,6 @@
 package com.hana.hanalink.sigun.controller;
 
+import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.sigun.dto.response.SiGunResponse;
 import com.hana.hanalink.sigun.service.SiGunService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,8 @@ public class SiGunController {
     private final SiGunService siGunService;
 
     @GetMapping
-    public List<SiGunResponse> getAllSiGun() {
-        return siGunService.getAllSiGun();
+    public SuccessResponse<List<SiGunResponse>> getAllSiGun(){
+        List<SiGunResponse> siGunResponse = siGunService.getAllSiGun();
+        return SuccessResponse.success(siGunResponse);
     }
 }

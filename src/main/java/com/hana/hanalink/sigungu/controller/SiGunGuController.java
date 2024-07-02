@@ -1,5 +1,6 @@
 package com.hana.hanalink.sigungu.controller;
 
+import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.sigungu.dto.response.SiGunGuResponse;
 import com.hana.hanalink.sigungu.service.SiGunGuService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,8 @@ public class SiGunGuController {
     private final SiGunGuService siGunGuService;
 
     @GetMapping
-    public List<SiGunGuResponse> getBySiGunId(@PathVariable Long siGunId){
-        return siGunGuService.getBySiGunId(siGunId);
+    public SuccessResponse<List<SiGunGuResponse>> getBySiGunId(@PathVariable Long siGunId){
+        List<SiGunGuResponse> siGunGuResponse = siGunGuService.getBySiGunId(siGunId);
+        return SuccessResponse.success(siGunGuResponse);
     }
 }
