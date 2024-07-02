@@ -40,8 +40,8 @@ public class SecurityConfig {
                                         "/api/v1/member/messageCheck",
                                         "/api/v1/member/regionCheck",
                                         "/api/v1/member/phoneCheck",
-                                        "/api/v1/sigun",
-                                        "/api/v1/sigun/{siGunId}").permitAll()
+                                        "/ws/**",
+                                "*").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -54,7 +54,7 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
