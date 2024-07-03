@@ -117,7 +117,7 @@ public class FirebaseFcmService {
 
     private Message makeFcmMessageForTopic(String topic, String title,String body, String image) {
         Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
-        Message msg = Message.builder().setTopic(topic).setNotification(notification).build();
+        Message msg = Message.builder().setTopic(topic).setNotification(notification).putData("teamId",topic).build();
         return msg;
     }
 
