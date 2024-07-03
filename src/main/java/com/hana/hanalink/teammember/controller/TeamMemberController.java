@@ -29,13 +29,13 @@ public class TeamMemberController {
 
     /*모임원 내보내기*/
     @DeleteMapping("/{teamMemberId}")
-    public SuccessResponse<Long> deleteTeamMember(@PathVariable("teamMemberId") Long teamMemberId) {
-        teamMemberService.deleteTeamMember(teamMemberId);
+    public SuccessResponse<Long> deleteTeamMember(@PathVariable("teamMemberId") Long teamMemberId,@RequestParam("type") String type) {
+        teamMemberService.deleteTeamMember(teamMemberId,type);
         return SuccessResponse.successWithNoData();
     }
 
     /*총무 변경하기*/
-    @PostMapping("/teamMember")
+    @PostMapping("")
     public SuccessResponse<Long> changeTeamChairRole(@RequestBody TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
         teamMemberService.changeChairRole(teamMemberRoleChangeReq);
         meetingAccountService.changeMeetingAccount(teamMemberRoleChangeReq.fromChairId(), teamMemberRoleChangeReq.ToChairId());
