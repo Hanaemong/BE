@@ -22,6 +22,7 @@ public class GeocodingUtil {
                 .uri(uriBuilder -> uriBuilder
                         .path("/maps/api/geocode/json")
                         .queryParam("latlng", latitude + "," + longitude)
+                        .queryParam("result_type", "street_address")
                         .queryParam("key", apiKey)
                         .queryParam("language", "ko")
                         .build())
