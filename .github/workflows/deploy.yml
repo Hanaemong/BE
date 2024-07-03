@@ -45,8 +45,7 @@ jobs:
       - name: Set up kubectl
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-          kubectl config view
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
         env:
           KUBECONFIG: $HOME/.kube/config
 
