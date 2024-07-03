@@ -45,26 +45,34 @@ public class SurveyService {
         int roundedScore = (int) Math.floor(curScore);
 
         if (preRoundedScore != roundedScore) {
+            String title = "내 모임 등급 변경\uD83E\uDE77🎉!!";
+            String message = "";
+
             switch (roundedScore) {
                 case 0:
-                    firebaseFcmService.sendTopicMessageWithLogoImage(teamId,"내 모임 등급 변경\uD83E\uDE77!!","내 모임 등급이 브론즈로 변경되었어요",AlarmType.LEVEL);
+                    message = "내 모임 등급이 브론즈로 변경되었어요";
                     break;
                 case 1:
-                    firebaseFcmService.sendTopicMessageWithLogoImage(teamId,"내 모임 등급 변경\uD83E\uDE77!!","내 모임 등급이 실버로 변경되었어요",AlarmType.LEVEL);
+                    message = "내 모임 등급이 실버로 변경되었어요";
                     break;
                 case 2:
-                    firebaseFcmService.sendTopicMessageWithLogoImage(teamId,"내 모임 등급 변경\uD83E\uDE77!!","내 모임 등급이 골드로 변경되었어요",AlarmType.LEVEL);
+                    message = "내 모임 등급이 골드로 변경되었어요";
                     break;
                 case 3:
-                    firebaseFcmService.sendTopicMessageWithLogoImage(teamId,"내 모임 등급 변경\uD83E\uDE77!!","내 모임 등급이 다이아로 변경되었어요",AlarmType.LEVEL);
+                    message = "내 모임 등급이 다이아로 변경되었어요";
                     break;
                 case 4:
                 case 5:
-                    firebaseFcmService.sendTopicMessageWithLogoImage(teamId,"내 모임 등급 변경\uD83E\uDE77!!","내 모임 등급이 하나 VIP로 변경되었어요",AlarmType.LEVEL);
+                    message = "내 모임 등급이 하나 VIP로 변경되었어요";
                     break;
-
+                default:
+                    // 만약 예상하지 못한 등급이 들어올 경우 예외 처리
+                    throw new IllegalArgumentException("Invalid roundedScore: " + roundedScore);
             }
+
+            firebaseFcmService.sendTopicMessageWithImage(teamId, title, message, AlarmType.LEVEL, false);
         }
+
 
     }
 

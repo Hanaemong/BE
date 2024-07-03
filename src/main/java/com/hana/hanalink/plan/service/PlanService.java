@@ -26,7 +26,7 @@ public class PlanService {
         Long planId = planRepository.save(planPostReq.toEntity(team,image)).getPlanId();
 
         if (planId != null) {
-            firebaseFcmService.sendTopicMessageWithTeamImage(teamId,team.getTeamName()+"모임 일정 개설!!",planPostReq.planName()+"일정이 개설되었어요 ~\n 지금 바로 확인해보세요.", AlarmType.PLAN);
+            firebaseFcmService.sendTopicMessageWithImage(teamId,team.getTeamName()+"모임 일정 개설!!",planPostReq.planName()+"일정이 개설되었어요 ~\n 지금 바로 확인해보세요.", AlarmType.PLAN,true);
             return  planId;
         }
 

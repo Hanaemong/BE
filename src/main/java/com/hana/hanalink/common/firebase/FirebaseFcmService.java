@@ -6,7 +6,6 @@ import com.hana.hanalink.alarm.domain.AlarmType;
 import com.hana.hanalink.alarm.repository.AlarmRepository;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.member.domain.Member;
-import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.member.repository.MemberRepository;
 import com.hana.hanalink.member.service.MemberDetailsService;
 import com.hana.hanalink.team.domain.Team;
@@ -24,61 +23,82 @@ public class FirebaseFcmService {
     private final TeamRepository teamRepository;
     private final AlarmRepository alarmRepository;
     private final MemberRepository memberRepository;
-
     private final MemberDetailsService memberDetailsService;
 
+    /*모임 구독하기*/
     public void subscribeToTopic(String token, String topic) throws FirebaseMessagingException {
         TopicManagementResponse response = FirebaseMessaging.getInstance().subscribeToTopic(
                 Collections.singletonList(token), topic);
-        System.out.println(response.getSuccessCount() + " tokens were subscribed successfully");
     }
 
-    public void sendRequestTeamMemberToChair(String token,String title, String body, Long teamId,Member member) {
-        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(null).build();
-        Message msg = Message.builder().setToken(token).setNotification(notification).build();
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-
-        this.sendMessage(msg,title,body,AlarmType.TEAM,team,member);
+    /*모임 구독취소*/
+    public void unSubscribeFromTopic(String token, String topic) throws FirebaseMessagingException {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(Collections.singletonList(token), topic);
     }
 
-    public void sendTargetMessage(String targetToken, String title, String body,Long teamId)  {
-        this.sendTargetMessage(targetToken, title, body, null,memberDetailsService.getCurrentUserDetails(),teamId);
-    }
-    public void sendTargetMessage(String targetToken, String title, String body, String image,MemberDetails memberDetails,Long teamId)  {
-        Member member = memberRepository.findByPhone(memberDetails.getPassword()).orElseThrow(EntityNotFoundException::new);
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
-        Message msg = Message.builder().setToken(targetToken).setNotification(notification).build();
-        sendMessage(msg,title,body,AlarmType.TEAM,team,member);
-    }
 
-    public void sendTopicMessageWithLogoImage(Long teamId, String title, String body,AlarmType type)  {
-        Member member = memberRepository.findByPhone(memberDetailsService.getCurrentUserDetails().getUsername()).orElseThrow(EntityNotFoundException::new);
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(null).build();
-        Message msg = Message.builder().setTopic(teamId.toString()).setNotification(notification).putData("teamId",teamId.toString()).build();
-        sendMessage(msg,title,body,type,team,member);
-    }
-    public void sendTopicMessageWithTeamImage(Long teamId, String title, String body, AlarmType type) {
-        Member member = memberRepository.findByPhone(memberDetailsService.getCurrentUserDetails().getUsername()).orElseThrow(EntityNotFoundException::new);
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(team.getThumbNail()).build();
-        Message msg = Message.builder().setTopic(teamId.toString()).setNotification(notification).putData("teamId",teamId.toString()).build();
-        sendMessage(msg,title,body,type,team,member);
-    }
-
-    public void sendMessage(Message message, String title, String body, AlarmType type,Team team,Member member) {
-        firebaseMessaging.sendAsync(message);
-        Alarm alarm = Alarm.builder()
+    /*모임 가입된 사람에게 알림*/
+    /*모임 승인요청시 총무 알림*/
+    /*큐알 결제시 총무 알림*/
+    public void sendFcmTeamOfAlarmType(String token,String title,String body,Team team,Member member) {
+        FcmMessageReq req = FcmMessageReq.builder()
                 .title(title)
                 .body(body)
-                .isSeen(false)
-                .type(type)
+                .image(null)
+                .type(AlarmType.TEAM)
                 .member(member)
                 .team(team)
                 .build();
+
+        Message message = makeFcmMessage(token,title, body,null);
+        this.sendMessage(message,req);
+    }
+
+    /*level 업그레이드시 알림*/
+    /*설문조사 요청시 모임원 알림*/
+    /*일정 개설시 모임원 알림*/
+    public void sendTopicMessageWithImage(Long teamId, String title, String body,AlarmType type,boolean isUseImg)  {
+        Member member = memberRepository.findByPhone(memberDetailsService.getCurrentUserDetails().getUsername()).orElseThrow(EntityNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
+
+        FcmMessageReq req = FcmMessageReq.builder()
+                .title(title)
+                .body(body)
+                .image(isUseImg? team.getThumbNail() :null)
+                .team(team)
+                .member(member)
+                .type(type)
+                .build();
+        Message message= makeFcmMessageForTopic(teamId.toString(),title,body,null);
+        this.sendMessage(message,req);
+    }
+
+    public void sendMessage(Message message,FcmMessageReq req) {
+
+        firebaseMessaging.sendAsync(message);
+
+        Alarm alarm = Alarm.builder()
+                .title(req.title())
+                .body(req.body())
+                .isSeen(false)
+                .type(req.type())
+                .member(req.member())
+                .team(req.team())
+                .build();
         alarmRepository.save(alarm);
 
+    }
+
+    private Message makeFcmMessage(String token, String title,String body, String image) {
+        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
+        Message msg = Message.builder().setToken(token).setNotification(notification).build();
+        return msg;
+    }
+
+    private Message makeFcmMessageForTopic(String topic, String title,String body, String image) {
+        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
+        Message msg = Message.builder().setTopic(topic).setNotification(notification).build();
+        return msg;
     }
 
     public BatchResponse sendMessage(MulticastMessage message) throws FirebaseMessagingException {
