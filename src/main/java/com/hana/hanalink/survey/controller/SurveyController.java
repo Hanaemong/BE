@@ -18,7 +18,7 @@ public class SurveyController {
 
     @GetMapping("/survey/request/{teamId}")
     public SuccessResponse<Void> requestSurvey(@PathVariable("teamId") Long teamId) {
-        firebaseFcmService.sendTopicMessageWithImage(teamId,"설문조사 요청"," 모임은 즐거우셨나요?\n지금 당장 설문조사에 참여해 내 모임의 등급을\n올려보세요 ~!!", AlarmType.SURVEY,true);
+        firebaseFcmService.sendTopicMessageWithImage(teamId,"설문조사 요청 알림📪"," 모임은 즐거우셨나요?\n지금 당장 설문조사에 참여해 내 모임의 등급을\n올려보세요 ~!", AlarmType.SURVEY,true);
         return SuccessResponse.successWithNoData();
     }
 }
