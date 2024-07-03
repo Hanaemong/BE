@@ -1,6 +1,6 @@
 //package com.hana.hanalink.chatting.handler;
 //
-//import com.hana.hanalink.chatting.domain.Message;
+//import com.hana.hanalink.chatting.dto.Message;
 //import lombok.extern.slf4j.Slf4j;
 //import org.json.JSONObject;
 //import org.springframework.web.socket.CloseStatus;
