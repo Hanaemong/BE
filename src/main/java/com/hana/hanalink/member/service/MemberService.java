@@ -156,12 +156,8 @@ public class MemberService {
 
     @Transactional
     public void changeRegion(ChangeRegionRequest request, String authenticatedPhone) {
-        Member member = memberRepository.findById(request.memberId())
+        Member member = memberRepository.findByPhone(authenticatedPhone)
                 .orElseThrow(() -> new MemberNotFoundException());
-
-        if (!member.getPhone().equals(authenticatedPhone)) {
-            throw new UnauthorizedException();
-        }
 
         SiGun siGun = siGunRepository.findById(request.siGunId())
                 .orElseThrow(() -> new SiGunIdNotFoundException());
