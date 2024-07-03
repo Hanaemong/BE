@@ -10,10 +10,14 @@ import com.hana.hanalink.member.repository.MemberRepository;
 import com.hana.hanalink.member.service.MemberDetailsService;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.repository.TeamRepository;
+import com.hana.hanalink.teammember.domain.TeamMember;
+import com.hana.hanalink.teammember.domain.TeamMemberRole;
+import com.hana.hanalink.teammember.repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ public class FirebaseFcmService {
     private final AlarmRepository alarmRepository;
     private final MemberRepository memberRepository;
     private final MemberDetailsService memberDetailsService;
+    private final TeamMemberRepository teamMemberRepository;
 
     /*모임 구독하기*/
     public void subscribeToTopic(String token, String topic) throws FirebaseMessagingException {
@@ -60,17 +65,32 @@ public class FirebaseFcmService {
     public void sendTopicMessageWithImage(Long teamId, String title, String body,AlarmType type,boolean isUseImg)  {
         Member member = memberRepository.findByPhone(memberDetailsService.getCurrentUserDetails().getUsername()).orElseThrow(EntityNotFoundException::new);
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-
-        FcmMessageReq req = FcmMessageReq.builder()
-                .title(title)
-                .body(body)
-                .image(isUseImg? team.getThumbNail() :null)
-                .team(team)
-                .member(member)
-                .type(type)
-                .build();
-        Message message= makeFcmMessageForTopic(teamId.toString(),title,body,null);
-        this.sendMessage(message,req);
+        if (AlarmType.SURVEY.equals(type)) {
+            List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam_TeamIdAndRole(teamId, TeamMemberRole.REGULAR);
+            for(TeamMember teamMember:teamMembers) {
+                FcmMessageReq req = FcmMessageReq.builder()
+                        .title(title)
+                        .body(body)
+                        .image(isUseImg ? team.getThumbNail() : null)
+                        .team(teamMember.getTeam())
+                        .member(teamMember.getMember())
+                        .type(type)
+                        .build();
+                Message message = makeFcmMessageForTopic(teamId.toString(), title, body, null);
+                this.sendMessage(message, req);
+            }
+        } else {
+            FcmMessageReq req = FcmMessageReq.builder()
+                    .title(title)
+                    .body(body)
+                    .image(isUseImg? team.getThumbNail() :null)
+                    .team(team)
+                    .member(member)
+                    .type(type)
+                    .build();
+            Message message= makeFcmMessageForTopic(teamId.toString(),title,body,null);
+            this.sendMessage(message,req);
+        }
     }
 
     public void sendMessage(Message message,FcmMessageReq req) {

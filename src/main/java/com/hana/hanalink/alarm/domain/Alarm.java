@@ -52,6 +52,7 @@ public class Alarm extends BaseEntity {
                 .image(image)
                 .isSeen(isSeen)
                 .type(type)
+                .teamId(team.getTeamId())
                 .createdAt(this.getCreatedAt())
                 .build();
     }
