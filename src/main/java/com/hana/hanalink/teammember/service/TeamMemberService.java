@@ -28,7 +28,19 @@ public class TeamMemberService {
     }
 
     @Transactional
-    public void deleteTeamMember(Long teamMemberId) {
+    public void deleteTeamMember(Long teamMemberId,String type) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
+        switch (type) {
+            case "LEAVE":
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 탈퇴 알림🥲",teamMember.getTeam().getTeamName()+"모임에 탈퇴되었습니다.",teamMember.getTeam(),teamMember.getMember());
+
+            case "DENY":
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember.getTeam().getTeamName()+"모임가입이 거절되었습니다.",teamMember.getTeam(),teamMember.getMember());
+
+            case "REJECT":
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember.getTeam().getTeamName()+"모임가입이 거절되었습니다.",teamMember.getTeam(),teamMember.getMember());
+
+        }
         teamMemberRepository.deleteById(teamMemberId);
     }
 
@@ -50,7 +62,7 @@ public class TeamMemberService {
 
         /* fcm 모임 가입 허락된 모임원에게 알림 발송*/
         firebaseFcmService.subscribeToTopic(teamMember.getMember().getFcmToken(),teamMember.getTeam().getTeamId().toString());
-        firebaseFcmService.sendTargetMessage(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!!",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!!",teamMember.getTeam().getTeamId());
+        firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!!",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!!",teamMember.getTeam(),teamMember.getMember());
     }
 
 }
