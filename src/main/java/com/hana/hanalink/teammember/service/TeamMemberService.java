@@ -22,8 +22,8 @@ public class TeamMemberService {
     private final FirebaseFcmService firebaseFcmService;
 
     @Transactional(readOnly = true)
-    public List<TeamMemberRes> getTeamMembers(Long teamId,String memberGender, String memberProfile) {
-        return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(memberGender,memberProfile)
+    public List<TeamMemberRes> getTeamMembers(Long teamId) {
+        return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getMember().getName())
                 ).toList();
     }
 
