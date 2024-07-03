@@ -1,4 +1,4 @@
-package com.hana.hanalink.plan.dto;
+package com.hana.hanalink.plan.dto.request;
 
 import com.hana.hanalink.plan.domain.Plan;
 import com.hana.hanalink.team.domain.Team;

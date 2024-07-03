@@ -3,13 +3,18 @@ package com.hana.hanalink.plan.service;
 import com.hana.hanalink.alarm.domain.AlarmType;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.common.firebase.FirebaseFcmService;
-import com.hana.hanalink.plan.dto.PlanPostReq;
+import com.hana.hanalink.plan.domain.Plan;
+import com.hana.hanalink.plan.dto.request.PlanPostReq;
+import com.hana.hanalink.plan.dto.response.PlanRes;
 import com.hana.hanalink.plan.repository.PlanRepository;
 import com.hana.hanalink.team.domain.Team;
+import com.hana.hanalink.team.exception.TeamNotFoundException;
 import com.hana.hanalink.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +27,7 @@ public class PlanService {
     private final FirebaseFcmService firebaseFcmService;
 
     public long postPlan(Long teamId, PlanPostReq planPostReq,String image){
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         Long planId = planRepository.save(planPostReq.toEntity(team,image)).getPlanId();
 
         if (planId != null) {
@@ -31,5 +36,25 @@ public class PlanService {
         }
 
         throw new EntityNotFoundException();
+    }
+
+    public List<PlanRes> getPlans(Long teamId) {
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        List<Plan> planList = planRepository.findByTeam(team);
+
+        return planList.stream()
+                .map(this::buildPlanRes)
+                .toList();
+    }
+
+    private PlanRes buildPlanRes(Plan plan) {
+        return PlanRes.builder()
+                .planId(plan.getPlanId())
+                .planName(plan.getPlanName())
+                .planDate(plan.getPlanDate())
+                .place(plan.getPlace())
+                .cost(plan.getCost())
+                .planImg(plan.getPlanImg())
+                .build();
     }
 }
