@@ -1,4 +1,4 @@
-package com.hana.hanalink.chatting.domain;
+package com.hana.hanalink.chatting.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
