@@ -46,8 +46,8 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-        env:
-          KUBECONFIG: $HOME/.kube/config
+          export KUBECONFIG=$HOME/.kube/config
+          kubectl config view
 
       - name: Delete old pods
         run: kubectl delete pods -l app=hanalink-spring-boot-app
