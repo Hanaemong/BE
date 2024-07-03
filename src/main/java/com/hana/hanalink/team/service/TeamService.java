@@ -149,7 +149,7 @@ public class TeamService {
                 .category(team.getCategory())
                 .score(team.getScore())
                 .thumbNail(team.getThumbNail())
-                .memberCnt(teamMemberRepository.countByTeam(team))
+                .memberCnt(teamMemberRepository.countByTeamAndRoleNot(team,TeamMemberRole.PENDING))
                 .build();
     }
 
