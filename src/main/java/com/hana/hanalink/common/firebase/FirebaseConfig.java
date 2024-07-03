@@ -25,10 +25,6 @@ public class FirebaseConfig {
         InputStream serviceAccount =
                 new ClassPathResource("hanalink-d8253-firebase-adminsdk-t3eoz-05eb36f896.json").getInputStream();
 
-//        FirebaseOptions options = FirebaseOptions.builder()
-//                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-//                .build();
-
         byte[] jsonBytes = serviceAccount.readAllBytes();
         String jsonString = new String(jsonBytes, StandardCharsets.UTF_8);
 
