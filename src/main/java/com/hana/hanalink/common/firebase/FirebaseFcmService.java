@@ -76,7 +76,7 @@ public class FirebaseFcmService {
                         .member(teamMember.getMember())
                         .type(type)
                         .build();
-                Message message = makeFcmMessageForTopic(teamId.toString(), title, body, null);
+                Message message = makeFcmMessageForTopic(teamId.toString(), title, body, null,type);
                 this.sendMessage(message, req);
             }
         } else {
@@ -88,7 +88,7 @@ public class FirebaseFcmService {
                     .member(member)
                     .type(type)
                     .build();
-            Message message= makeFcmMessageForTopic(teamId.toString(),title,body,null);
+            Message message= makeFcmMessageForTopic(teamId.toString(),title,body,null,type);
             this.sendMessage(message,req);
         }
     }
@@ -115,9 +115,9 @@ public class FirebaseFcmService {
         return msg;
     }
 
-    private Message makeFcmMessageForTopic(String topic, String title,String body, String image) {
+    private Message makeFcmMessageForTopic(String topic, String title, String body, String image, AlarmType type) {
         Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(image).build();
-        Message msg = Message.builder().setTopic(topic).setNotification(notification).putData("teamId",topic).build();
+        Message msg = Message.builder().setTopic(topic).setNotification(notification).putData("teamId",type.equals(AlarmType.SURVEY)? topic : "-1").build();
         return msg;
     }
 
