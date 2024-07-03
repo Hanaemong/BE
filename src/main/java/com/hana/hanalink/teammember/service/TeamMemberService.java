@@ -22,13 +22,26 @@ public class TeamMemberService {
     private final FirebaseFcmService firebaseFcmService;
 
     @Transactional(readOnly = true)
-    public List<TeamMemberRes> getTeamMembers(Long teamId,String memberGender, String memberProfile) {
-        return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(memberGender,memberProfile)
+    public List<TeamMemberRes> getTeamMembers(Long teamId) {
+        return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getMember().getName())
                 ).toList();
     }
 
     @Transactional
-    public void deleteTeamMember(Long teamMemberId) {
+    public void deleteTeamMember(Long teamMemberId,String type) {
+        TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
+        switch (type) {
+            /*탈퇴*/
+            case "LEAVE":
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 탈퇴 알림🥲",teamMember.getTeam().getTeamName()+"모임에 탈퇴되었습니다.",teamMember.getTeam(),teamMember.getMember());
+            /*거절*/
+            case "DENY":
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember.getTeam().getTeamName()+"모임가입이 거절되었습니다.",teamMember.getTeam(),teamMember.getMember());
+            /*내보내기*/
+            case "REJECT":
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 강퇴 알림☹️",teamMember.getTeam().getTeamName()+"모임에 강퇴되었습니다.",teamMember.getTeam(),teamMember.getMember());
+
+        }
         teamMemberRepository.deleteById(teamMemberId);
     }
 
@@ -50,7 +63,7 @@ public class TeamMemberService {
 
         /* fcm 모임 가입 허락된 모임원에게 알림 발송*/
         firebaseFcmService.subscribeToTopic(teamMember.getMember().getFcmToken(),teamMember.getTeam().getTeamId().toString());
-        firebaseFcmService.sendTargetMessage(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!!",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!!",teamMember.getTeam().getTeamId());
+        firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!🥳",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!",teamMember.getTeam(),teamMember.getMember());
     }
 
 }
