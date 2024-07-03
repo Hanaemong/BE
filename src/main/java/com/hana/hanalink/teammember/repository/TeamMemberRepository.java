@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
 
     List<TeamMember> findTeamMemberByTeam_TeamId(Long teamId);
-    Integer countByTeam(Team team);
+    Integer countByTeamAndRoleNot(Team team, TeamMemberRole role);
 
     TeamMember findTeamMemberByTeamTeamIdAndRole(Long teamId, TeamMemberRole role);
 
