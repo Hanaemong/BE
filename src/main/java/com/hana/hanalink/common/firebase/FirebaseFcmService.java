@@ -33,6 +33,14 @@ public class FirebaseFcmService {
         System.out.println(response.getSuccessCount() + " tokens were subscribed successfully");
     }
 
+    public void sendRequestTeamMemberToChair(String token,String title, String body, Long teamId,Member member) {
+        Notification notification = Notification.builder().setTitle(title).setBody(body).setImage(null).build();
+        Message msg = Message.builder().setToken(token).setNotification(notification).build();
+        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
+
+        this.sendMessage(msg,title,body,AlarmType.TEAM,team,member);
+    }
+
     public void sendTargetMessage(String targetToken, String title, String body,Long teamId)  {
         this.sendTargetMessage(targetToken, title, body, null,memberDetailsService.getCurrentUserDetails(),teamId);
     }

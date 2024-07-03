@@ -83,8 +83,8 @@ public class TeamService {
         teamMemberRepository.save(teamMember);
 
         /*fcm 모임 총무한테 가입요청 알림 발송*/
-        TeamMember chair = teamMemberRepository.findTeamMemberByTeamTeamIdAndRole(teamId,TeamMemberRole.CHAIR);
-        firebaseFcmService.sendTargetMessage(chair.getMember().getFcmToken(),"모임 수락 요청 알림",member.getName()+"님이 "+team.getTeamName()+" 모임 승인 요청하였습니다.",teamId);
+        TeamMember chair = teamMemberRepository.findTeamMemberByTeam_TeamIdAndRole(teamId,TeamMemberRole.CHAIR);
+        firebaseFcmService.sendRequestTeamMemberToChair(chair.getMember().getFcmToken(),"모임 수락 요청 알림",member.getName()+"님이 "+team.getTeamName()+" 모임 승인 요청하였습니다.",teamId,chair.getMember());
     }
 
     public List<TeamRes> getTeamList(String phone) {
