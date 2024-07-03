@@ -53,8 +53,8 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
 
       - name: Delete old pods
-        run: kubectl delete pods -l app=hanalink-spring-boot-app
+        run: kubectl delete pods -l app=new-hanalink-spring-boot-app
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/hanalink-spring-boot-app hanalink-spring-boot-app=${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest
+          kubectl set image deployment/new-hanalink-spring-boot-app new-hanalink-spring-boot-app=${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest
