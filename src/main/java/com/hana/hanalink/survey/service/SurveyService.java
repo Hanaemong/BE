@@ -11,6 +11,8 @@ import com.hana.hanalink.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SurveyService {
@@ -29,9 +31,12 @@ public class SurveyService {
         team.setScore(curScore);
 
         /*설문응답하면 설문조사 알람 확인 처리*/
-        Alarm alarm = alarmRepository.findAlarmByMember_MemberIdAndTypeAndTeam_TeamId(memberId, AlarmType.SURVEY,teamId);
-        alarm.setIsSeen();
-        alarmRepository.save(alarm);
+        List<Alarm> alarms = alarmRepository.findAlarmsByMember_MemberIdAndTypeAndTeam_TeamId(memberId, AlarmType.SURVEY,teamId);
+
+        for(Alarm alarm:alarms) {
+            alarm.setIsSeen();
+            alarmRepository.save(alarm);
+        }
 
         /* fcm 하나체인 등급에 따른 업그레이드 알림*/
         checkUpgradeLevel(beforeScore,curScore,teamId);
