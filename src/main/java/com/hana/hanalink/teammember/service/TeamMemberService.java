@@ -28,7 +28,7 @@ public class TeamMemberService {
 
     @Transactional(readOnly = true)
     public List<TeamMemberRes> getTeamMembers(Long teamId) {
-        return teamMemberRepository.findTeamMemberByTeam_TeamIdAndRoleNot(teamId,TeamMemberRole.PENDING).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getMember().getName())
+        return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getMember().getName())
                 ).toList();
     }
 
