@@ -58,4 +58,8 @@ public class Team extends BaseEntity {
     public void setScore(float score) {
         this.score = score;
     }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
 }
