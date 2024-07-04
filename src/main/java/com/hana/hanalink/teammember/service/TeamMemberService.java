@@ -2,6 +2,10 @@ package com.hana.hanalink.teammember.service;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.hana.hanalink.common.firebase.FirebaseFcmService;
+import com.hana.hanalink.member.domain.Member;
+import com.hana.hanalink.member.domain.MemberDetails;
+import com.hana.hanalink.member.exception.MemberNotFoundException;
+import com.hana.hanalink.member.repository.MemberRepository;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
@@ -20,20 +24,25 @@ public class TeamMemberService {
 
     private final TeamMemberRepository teamMemberRepository;
     private final FirebaseFcmService firebaseFcmService;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public List<TeamMemberRes> getTeamMembers(Long teamId) {
-        return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getMember().getName())
+        return teamMemberRepository.findTeamMemberByTeam_TeamIdAndRoleNot(teamId,TeamMemberRole.PENDING).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getMember().getName())
                 ).toList();
     }
 
     @Transactional
-    public void deleteTeamMember(Long teamMemberId,String type) {
+    public void deleteTeamMember(Long teamMemberId, String type, MemberDetails memberDetails) {
         TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
+        Long id = teamMemberId;
         switch (type) {
-            /*탈퇴*/
+            /*탈퇴 ! 여기서는 teamMemberId가 teamId로 쓰임*/
             case "LEAVE":
-                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 탈퇴 알림🥲",teamMember.getTeam().getTeamName()+"모임에 탈퇴되었습니다.",teamMember.getTeam(),teamMember.getMember());
+                Member member = memberRepository.findByPhone(memberDetails.getUsername()).orElseThrow(MemberNotFoundException::new);
+                TeamMember myTeamMember = teamMemberRepository.findByMemberAndTeam_TeamId(member,id).orElseThrow(TeamMemberNotFoundException::new);
+                firebaseFcmService.sendFcmTeamOfAlarmType(myTeamMember.getMember().getFcmToken(),"모임 탈퇴 알림🥲",myTeamMember.getTeam().getTeamName()+"모임에 탈퇴되었습니다.",myTeamMember.getTeam(),myTeamMember.getMember());
+                id = myTeamMember.getTeamMemberId();
             /*거절*/
             case "DENY":
                 firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember.getTeam().getTeamName()+"모임가입이 거절되었습니다.",teamMember.getTeam(),teamMember.getMember());
@@ -42,17 +51,17 @@ public class TeamMemberService {
                 firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 강퇴 알림☹️",teamMember.getTeam().getTeamName()+"모임에 강퇴되었습니다.",teamMember.getTeam(),teamMember.getMember());
 
         }
-        teamMemberRepository.deleteById(teamMemberId);
+        teamMemberRepository.deleteById(id);
     }
 
     @Transactional
     public void changeChairRole(TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
-        TeamMember curChair = teamMemberRepository.findById(teamMemberRoleChangeReq.fromChairId()).orElseThrow(TeamMemberNotFoundException::new);
-        curChair.changeRole(TeamMemberRole.REGULAR);
-        TeamMember nextChair = teamMemberRepository.findById(teamMemberRoleChangeReq.ToChairId()).orElseThrow(TeamMemberNotFoundException::new);
-        nextChair.changeRole(TeamMemberRole.CHAIR);
-        teamMemberRepository.save(curChair);
-        teamMemberRepository.save(nextChair);
+//        TeamMember curChair = teamMemberRepository.findById(teamMemberRoleChangeReq.fromChairId()).orElseThrow(TeamMemberNotFoundException::new);
+//        curChair.changeRole(TeamMemberRole.REGULAR);
+//        TeamMember nextChair = teamMemberRepository.findById(teamMemberRoleChangeReq.ToChairId()).orElseThrow(TeamMemberNotFoundException::new);
+//        nextChair.changeRole(TeamMemberRole.CHAIR);
+//        teamMemberRepository.save(curChair);
+//        teamMemberRepository.save(nextChair);
     }
 
     @Transactional

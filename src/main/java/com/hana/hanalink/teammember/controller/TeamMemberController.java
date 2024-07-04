@@ -3,10 +3,12 @@ package com.hana.hanalink.teammember.controller;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.meetingacount.service.MeetingAccountService;
+import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import com.hana.hanalink.teammember.dto.TeamMemberRoleChangeReq;
 import com.hana.hanalink.teammember.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,16 +29,16 @@ public class TeamMemberController {
 
     /*모임원 내보내기*/
     @DeleteMapping("/{teamMemberId}")
-    public SuccessResponse<Long> deleteTeamMember(@PathVariable("teamMemberId") Long teamMemberId,@RequestParam("type") String type) {
-        teamMemberService.deleteTeamMember(teamMemberId,type);
+    public SuccessResponse<Long> deleteTeamMember(@PathVariable("teamMemberId") Long teamMemberId, @RequestParam("type") String type, @AuthenticationPrincipal MemberDetails member) {
+        teamMemberService.deleteTeamMember(teamMemberId,type,member);
         return SuccessResponse.successWithNoData();
     }
 
     /*총무 변경하기*/
-    @PostMapping("")
-    public SuccessResponse<Long> changeTeamChairRole(@RequestBody TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
-        teamMemberService.changeChairRole(teamMemberRoleChangeReq);
-        meetingAccountService.changeMeetingAccount(teamMemberRoleChangeReq.fromChairId(), teamMemberRoleChangeReq.ToChairId());
+    @PostMapping("/{teamId}")
+    public SuccessResponse<Long> changeTeamChairRole(@PathVariable("teamId") Long teamId, @RequestBody TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
+//        teamMemberService.changeChairRole(teamMemberRoleChangeReq);
+        meetingAccountService.changeMeetingAccount(teamId, teamMemberRoleChangeReq.ToChairId());
         return SuccessResponse.successWithNoData();
     }
 

@@ -38,4 +38,8 @@ public class Member extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "si_gun_gu_id")
     private SiGunGu siGunGu;
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }
