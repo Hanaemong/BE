@@ -20,7 +20,7 @@ public class PlanController {
     private final PlanService planService;
     private final ImageUploadService imageUploadService;
 
-    @PostMapping(value = "/plan/{teamId}",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/{teamId}",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<Long> postPlan(@PathVariable("teamId") Long teamId, @RequestPart("planPost") PlanPostReq planPostReq, @RequestPart(value = "planImg", required = false)MultipartFile image) {
         String imagePath = "https://hanalinkbucket.s3.ap-northeast-2.amazonaws.com/planImg2.png";
         if (image != null || !image.isEmpty()) {
