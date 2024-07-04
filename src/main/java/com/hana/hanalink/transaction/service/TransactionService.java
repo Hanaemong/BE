@@ -2,6 +2,9 @@ package com.hana.hanalink.transaction.service;
 
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
+import com.hana.hanalink.accountto.domain.AccountTo;
+import com.hana.hanalink.accountto.repository.AccountToRepository;
+import com.hana.hanalink.common.PaymentTestData;
 import com.hana.hanalink.common.service.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.common.firebase.FirebaseFcmService;
@@ -36,7 +39,7 @@ public class TransactionService {
     private final MeetingAccountRepository meetingAccountRepository;
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
-
+    private final AccountToRepository accountToRepository;
     private final FirebaseFcmService firebaseFcmService;
 
     public TransactionDetailRes getTransHistory(Long teamId, YearMonth date){
@@ -48,10 +51,11 @@ public class TransactionService {
 
         /*년,월 별로 거래 내역 가져오기*/
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
-        List<Transaction> transactions = transactionRepository.findByAccountTo_AccountIdAndYearMonth(account.getAccountId(),date.getYear(),date.getMonthValue());
+        AccountTo accountTo = accountToRepository.findAccountToByAccount_AccountId(account.getAccountId());
+        List<Transaction> transactions = transactionRepository.findByAccountTo_AccountIdAndYearMonth(accountTo.getAccountToId(),date.getYear(),date.getMonthValue());
 
         List<TransactionRes> transactionResList = transactions.stream().map(trans -> (
-                trans.toTransMember(trans.getAccountTo().getMember()))).toList();
+                trans.toTransMember(trans.getAccountTo().getAccount().getMember()))).toList();
 
         return TransactionDetailRes.builder()
                 .balance(account.getBalance()) //잔액
@@ -98,6 +102,9 @@ public class TransactionService {
         Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
         Account myAccount = accountRepository.findById(transactionReq.accountId()).orElseThrow(EntityNotFoundException::new);
 
+        /*총무 계좌 가져오기*/
+        AccountTo chairAccount = accountToRepository.findAccountToByAccount_AccountId(meetingAccount.getAccount().getAccountId());
+
         /*내 계좌 출금*/
         myAccountWithdraw(myAccount,transactionReq.amount());
 
@@ -106,7 +113,7 @@ public class TransactionService {
                 .transFrom(member.getMemberName())
                 .transTo(team.getTeamName())
                 .accountFrom(myAccount)
-                .accountTo(meetingAccount.getAccount())
+                .accountTo(chairAccount)
                 .type(TransactionType.TRANSFER)
                 .build();
 

@@ -1,6 +1,7 @@
 package com.hana.hanalink.transaction.domain;
 
 import com.hana.hanalink.account.domain.Account;
+import com.hana.hanalink.accountto.domain.AccountTo;
 import com.hana.hanalink.common.domain.BaseEntity;
 import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.transaction.dto.response.TransactionRes;
@@ -36,7 +37,7 @@ public class Transaction extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "account_to_id")
-    private Account accountTo;
+    private AccountTo accountTo;
 
     @ManyToOne
     @JoinColumn(name = "account_from_id", nullable = false)

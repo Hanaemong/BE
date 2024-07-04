@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction,Long> {
 
-    @Query("SELECT t FROM Transaction t WHERE t.accountTo.accountId = :accountId AND " +
+    @Query("SELECT t FROM Transaction t WHERE t.accountTo.accountToId = :accountToId AND " +
             "YEAR(t.createdAt) = :year AND MONTH(t.createdAt) = :month")
-    List<Transaction> findByAccountTo_AccountIdAndYearMonth(@Param("accountId") Long accountId,
+    List<Transaction> findByAccountTo_AccountIdAndYearMonth(@Param("accountToId") Long accountToId,
                                                             @Param("year") int year,
                                                             @Param("month") int month);
 

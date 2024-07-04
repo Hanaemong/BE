@@ -104,6 +104,8 @@ public class MemberService {
         }
 
         String token = jwtUtil.generateAccessToken(member.getPhone());
+        member.setFcmToken(request.fcmToken());
+        memberRepository.save(member);
 
         return new LoginResponse(token, member.getMemberId(), member.getName(), member.getSiGunGu().getSiGunGu());
     }

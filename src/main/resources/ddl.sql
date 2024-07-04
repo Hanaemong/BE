@@ -113,7 +113,7 @@ CREATE TABLE `transaction` (
     `type` VARCHAR(255) NOT NULL,
     `account_to_id` BIGINT NULL,
     `account_from_id` BIGINT NOT NULL,
-    FOREIGN KEY (`account_to_id`) REFERENCES `account`(`account_id`),
+    FOREIGN KEY (`account_to_id`) REFERENCES `account_to`(`account_to_id`),
     FOREIGN KEY (`account_from_id`) REFERENCES `account`(`account_id`)
 );
 
@@ -140,4 +140,10 @@ CREATE TABLE `meeting_account` (
     `account_id` BIGINT NOT NULL,
     FOREIGN KEY (`team_id`) REFERENCES `team`(`team_id`),
     FOREIGN KEY (`account_id`) REFERENCES `account`(`account_id`)
+);
+
+
+CREATE TABLE `account_to` (
+    `account_to_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `account_id` BIGINT	NOT NULL
 );
