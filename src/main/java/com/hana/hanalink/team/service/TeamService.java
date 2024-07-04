@@ -41,7 +41,7 @@ public class TeamService {
     private final FirebaseFcmService firebaseFcmService;
 
     @Transactional
-    public CreateTeamRes createTeam(String phone, CreateTeamReq req) {
+    public CreateTeamRes createTeam(String phone, CreateTeamReq req, String thumbNail) {
         Member member = getMember(phone);
         Account account = accountRepository.findAccountByMember_MemberId(member.getMemberId());
         MeetingAccount meetingAccount = MeetingAccount.builder()
@@ -54,7 +54,7 @@ public class TeamService {
                 .build();
         meetingAccountRepository.save(meetingAccount);
         surveyResponseRepository.save(surveyResponse);
-        Team team = CreateTeamReq.toEntity(req, member.getSiGunGu(), surveyResponse, meetingAccount);
+        Team team = CreateTeamReq.toEntity(req, member.getSiGunGu(), surveyResponse, meetingAccount, thumbNail);
         teamRepository.save(team);
 
         TeamMember teamMember = TeamMember.builder()

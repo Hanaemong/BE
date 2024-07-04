@@ -1,4 +1,4 @@
-package com.hana.hanalink.common.S3;
+package com.hana.hanalink.common.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

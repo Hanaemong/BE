@@ -1,6 +1,7 @@
 package com.hana.hanalink.team.controller;
 
 import com.hana.hanalink.common.dto.SuccessResponse;
+import com.hana.hanalink.common.service.ImageUploadService;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.dto.request.CreateTeamReq;
 import com.hana.hanalink.team.dto.request.JoinTeamReq;
@@ -9,8 +10,10 @@ import com.hana.hanalink.team.dto.response.DetailTeamRes;
 import com.hana.hanalink.team.dto.response.TeamRes;
 import com.hana.hanalink.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,10 +22,13 @@ import java.util.List;
 @RequestMapping("/api/v1/team")
 public class TeamController {
     private final TeamService teamService;
+    private final ImageUploadService imageUploadService;
 
-    @PostMapping("")
-    SuccessResponse<CreateTeamRes> createTeam(@AuthenticationPrincipal MemberDetails member, @RequestBody CreateTeamReq req) {
-        return SuccessResponse.success(teamService.createTeam(member.getUsername(), req));
+    @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public SuccessResponse<CreateTeamRes> createTeam(@AuthenticationPrincipal MemberDetails member,
+                                                     @RequestPart("createTeam") CreateTeamReq req,
+                                                     @RequestPart(value = "thumbNail") MultipartFile img) {
+        return SuccessResponse.success(teamService.createTeam(member.getUsername(), req, imageUploadService.saveImage(img)));
     }
 
     @PostMapping("/{teamId}")
