@@ -1,10 +1,10 @@
-package com.hana.hanalink.plan.service;
+package com.hana.hanalink.common.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.hana.hanalink.plan.exception.ImageUploadFailException;
+import com.hana.hanalink.common.exception.ImageUploadFailException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

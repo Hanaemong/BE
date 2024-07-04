@@ -34,7 +34,7 @@
                 data: document.getElementById("message").value,
                 type: "chat"
             };
-            stompClient.send("/pub/hello", {}, JSON.stringify(message));
+            stompClient.send("/pub/send", {}, JSON.stringify(message));
         }
 
         function showMessage(message) {

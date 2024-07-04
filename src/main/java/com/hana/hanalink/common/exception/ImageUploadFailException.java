@@ -1,4 +1,4 @@
-package com.hana.hanalink.plan.exception;
+package com.hana.hanalink.common.exception;
 
 import com.hana.hanalink.common.exception.AccessDeniedException;
 

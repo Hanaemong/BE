@@ -10,35 +10,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Create application.yml
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
 
-    - name: Log in to Docker Hub
-      run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Create Firebase config JSON
+        run: |
+          echo "${{ secrets.FIREBASE_CONFIG_JSON }}" > src/main/resources/hanalink-d8253-firebase-adminsdk-t3eoz-05eb36f896.json
 
-    - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest .
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
-    - name: Push Docker image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
-    - name: Set up kubectl
-      run: |
-        mkdir -p $HOME/.kube
-        echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-    - name: Delete old pods
-      run: kubectl delete pods -l app=hanalink-spring-boot-app
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest .
 
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl set image deployment/hanalink-spring-boot-app hanalink-spring-boot-app=${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Set up kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Delete old pods
+        run: kubectl delete pods -l app=new-hanalink-spring-boot-app
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/new-hanalink-spring-boot-app new-hanalink-spring-boot-app=${{ secrets.DOCKER_USERNAME }}/hanalink-spring-boot:latest

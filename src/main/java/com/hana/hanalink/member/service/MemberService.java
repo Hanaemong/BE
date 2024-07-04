@@ -107,7 +107,7 @@ public class MemberService {
         member.setFcmToken(request.fcmToken());
         memberRepository.save(member);
 
-        return new LoginResponse(token, member.getMemberId(), member.getSiGunGu().getSiGunGu());
+        return new LoginResponse(token, member.getMemberId(), member.getName(), member.getSiGunGu().getSiGunGu());
     }
 
     public MemberMessageResponse memberMessage(MemberMessageRequest request) {
