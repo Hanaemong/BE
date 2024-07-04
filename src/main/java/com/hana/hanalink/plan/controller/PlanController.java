@@ -23,7 +23,8 @@ public class PlanController {
     @PostMapping(value = "/{teamId}",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<Long> postPlan(@PathVariable("teamId") Long teamId, @RequestPart("planPost") PlanPostReq planPostReq, @RequestPart(value = "planImg", required = false)MultipartFile image) {
         String imagePath = "https://hanalinkbucket.s3.ap-northeast-2.amazonaws.com/planImg2.png";
-        if (image != null || !image.isEmpty()) {
+
+        if (image != null && !image.isEmpty()) {
             imagePath = imageUploadService.saveImage(image);
         }
         return SuccessResponse.success(planService.postPlan(teamId,planPostReq,imagePath));
