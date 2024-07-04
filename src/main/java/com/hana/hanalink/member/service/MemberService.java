@@ -3,6 +3,8 @@ package com.hana.hanalink.member.service;
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.account.util.AccountNumberGenerator;
+import com.hana.hanalink.accountto.domain.AccountTo;
+import com.hana.hanalink.accountto.repository.AccountToRepository;
 import com.hana.hanalink.common.geocoding.GeocodingUtil;
 import com.hana.hanalink.common.jwt.JwtUtil;
 import com.hana.hanalink.member.domain.Member;
@@ -40,6 +42,7 @@ public class MemberService {
     private final DefaultMessageService messageService;
     private final GeocodingUtil geocodingUtil;
     private final AccountRepository accountRepository;
+    private final AccountToRepository accountToRepository;
 
     @Value("${coolsms.number.from}")
     private String from;
@@ -85,7 +88,7 @@ public class MemberService {
                 .build();
 
         accountRepository.save(account);
-
+        accountToRepository.save(AccountTo.builder().account(account).build());
     }
 
     private String generateRandomAccountName(){
