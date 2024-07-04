@@ -1,4 +1,4 @@
-package com.hana.hanalink.common;
+package com.hana.hanalink.common.service;
 
 import java.util.Random;
 

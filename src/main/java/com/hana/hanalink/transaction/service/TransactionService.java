@@ -2,7 +2,7 @@ package com.hana.hanalink.transaction.service;
 
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
-import com.hana.hanalink.common.PaymentTestData;
+import com.hana.hanalink.common.service.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
