@@ -70,6 +70,13 @@ public class TeamService {
     }
 
     @Transactional
+    public void updateBanner(Long teamId, String banner) {
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        team.setBanner(banner);
+        teamRepository.save(team);
+    }
+
+    @Transactional
     public void joinTeam(String phone, Long teamId, JoinTeamReq req) {
         Member member = getMember(phone);
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);

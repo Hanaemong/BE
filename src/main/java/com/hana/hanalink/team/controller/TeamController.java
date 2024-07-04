@@ -31,6 +31,15 @@ public class TeamController {
         return SuccessResponse.success(teamService.createTeam(member.getUsername(), req, imageUploadService.saveImage(img)));
     }
 
+
+    @PutMapping(value = "/{teamId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public SuccessResponse<Void> updateBanner(@PathVariable("teamId") Long teamId,
+                                              @RequestPart(value = "banner") MultipartFile img) {
+        teamService.updateBanner(teamId, imageUploadService.saveImage(img));
+        return SuccessResponse.successWithNoData();
+    }
+
+
     @PostMapping("/{teamId}")
     SuccessResponse<Void> joinTeam(@AuthenticationPrincipal MemberDetails member,
                                    @PathVariable("teamId") Long teamId,
