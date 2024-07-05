@@ -14,9 +14,9 @@
             stompClient.connect({}, function (frame) {
 
                 console.log('Connected: ' + frame);
-                var channelId = document.getElementById("channelId").value;
-                stompClient.subscribe('/sub/channel/' + channelId, function (message) {
-                    showMessage(JSON.parse(message.body));
+                var roomId = document.getElementById("roomId").value;
+                stompClient.subscribe('/sub/room/' + roomId, function (chatDto) {
+                    showMessage(JSON.parse(chatDto.body));
                 });
             });
         }
@@ -29,20 +29,20 @@
         }
 
         function sendMessage() {
-            var message = {
-                sender: document.getElementById("sender").value,
-                channelId: document.getElementById("channelId").value,
-                data: document.getElementById("message").value,
+            var chatDto = {
+                nickname: document.getElementById("nickname").value,
+                roomId: document.getElementById("roomId").value,
+                msg: document.getElementById("chatDto").value,
                 type: "chat"
             };
-            stompClient.send("/pub/send", {}, JSON.stringify(message));
+            stompClient.send("/pub/send", {}, JSON.stringify(chatDto));
         }
 
-        function showMessage(message) {
+        function showMessage(chatDto) {
             var response = document.getElementById("response");
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(message.sender + ": " + message.data));
+            p.appendChild(document.createTextNode(chatDto.nickname + ": " + chatDto.msg));
             response.appendChild(p);
         }
     </script>
@@ -51,11 +51,11 @@
 <h2>WebSocket Chat</h2>
 <div>
     <div>
-        <input type="text" id="sender" placeholder="Your name"/>
+        <input type="text" id="nickname" placeholder="Your name"/>
     </div>
     <div>
-        <input type="text" id="message" placeholder="Type a message..."/>
-        <input type="text" id="channelId" placeholder="Channel ID"/>
+        <input type="text" id="chatDto" placeholder="Type a chatDto..."/>
+        <input type="text" id="roomId" placeholder="Room ID"/>
         <button onclick="sendMessage()">Send</button>
     </div>
     <div>
