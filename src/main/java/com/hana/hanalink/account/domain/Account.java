@@ -34,9 +34,6 @@ public class Account extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    public void changeAccount(Long id) {
-        this.accountId = id;
-    }
 
     public void withDraw(Long amount) {
         this.balance -= amount;

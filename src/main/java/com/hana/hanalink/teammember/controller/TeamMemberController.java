@@ -37,7 +37,6 @@ public class TeamMemberController {
     /*총무 변경하기*/
     @PostMapping("/{teamId}")
     public SuccessResponse<Long> changeTeamChairRole(@PathVariable("teamId") Long teamId, @RequestBody TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
-//        teamMemberService.changeChairRole(teamMemberRoleChangeReq);
         meetingAccountService.changeMeetingAccount(teamId, teamMemberRoleChangeReq.ToChairId());
         return SuccessResponse.successWithNoData();
     }

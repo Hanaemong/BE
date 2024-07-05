@@ -27,7 +27,7 @@ public class SurveyService {
 
         int totalCount = team.getSurveyResponse().addSurveyCnt();
         float totalScore = team.getSurveyResponse().sumTotalScore(surveyRes.score());
-        float curScore = Math.round(((totalScore/totalCount)/20*5)*10)/10.0f;
+        float curScore = Math.round((((totalScore/totalCount)/20)*5)*10)/10.0f;
         team.setScore(curScore);
 
         /*설문응답하면 설문조사 알람 확인 처리*/
