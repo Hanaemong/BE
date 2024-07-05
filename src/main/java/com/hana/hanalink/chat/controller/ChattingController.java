@@ -1,6 +1,6 @@
-package com.hana.hanalink.chatting.controller;
+package com.hana.hanalink.chat.controller;
 
-import com.hana.hanalink.chatting.dto.Message;
+import com.hana.hanalink.chat.dto.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;

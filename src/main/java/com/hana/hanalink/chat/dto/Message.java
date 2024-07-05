@@ -1,4 +1,4 @@
-package com.hana.hanalink.chatting.dto;
+package com.hana.hanalink.chat.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
