@@ -9,7 +9,6 @@ import com.hana.hanalink.member.repository.MemberRepository;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
-import com.hana.hanalink.teammember.dto.TeamMemberRoleChangeReq;
 import com.hana.hanalink.teammember.exception.TeamMemberNotFoundException;
 import com.hana.hanalink.teammember.repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,20 +47,10 @@ public class TeamMemberService {
                 firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember.getTeam().getTeamName()+"모임가입이 거절되었습니다.",teamMember.getTeam(),teamMember.getMember());
             /*내보내기*/
             case "REJECT":
-                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 강퇴 알림☹️",teamMember.getTeam().getTeamName()+"모임에 강퇴되었습니다.",teamMember.getTeam(),teamMember.getMember());
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 강퇴 알림☹️",teamMember.getTeam().getTeamName()+"모임에 내보내기되었습니다.",teamMember.getTeam(),teamMember.getMember());
 
         }
         teamMemberRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void changeChairRole(TeamMemberRoleChangeReq teamMemberRoleChangeReq) {
-//        TeamMember curChair = teamMemberRepository.findById(teamMemberRoleChangeReq.fromChairId()).orElseThrow(TeamMemberNotFoundException::new);
-//        curChair.changeRole(TeamMemberRole.REGULAR);
-//        TeamMember nextChair = teamMemberRepository.findById(teamMemberRoleChangeReq.ToChairId()).orElseThrow(TeamMemberNotFoundException::new);
-//        nextChair.changeRole(TeamMemberRole.CHAIR);
-//        teamMemberRepository.save(curChair);
-//        teamMemberRepository.save(nextChair);
     }
 
     @Transactional
@@ -72,7 +61,7 @@ public class TeamMemberService {
 
         /* fcm 모임 가입 허락된 모임원에게 알림 발송*/
         firebaseFcmService.subscribeToTopic(teamMember.getMember().getFcmToken(),teamMember.getTeam().getTeamId().toString());
-        firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!🥳",teamMember.getTeam().getTeamName()+" 모임에 가입이 완료되었어요 ~!",teamMember.getTeam(),teamMember.getMember());
+        firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 수락 승인 완료!🥳",teamMember.getTeam().getTeamName()+"에 가입이 완료되었어요 ~!",teamMember.getTeam(),teamMember.getMember());
     }
 
 }

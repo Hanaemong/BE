@@ -6,6 +6,7 @@ import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.plan.domain.Plan;
 import com.hana.hanalink.plan.dto.request.PlanPostReq;
 import com.hana.hanalink.plan.dto.response.PlanRes;
+import com.hana.hanalink.plan.exception.PlanNotFoundException;
 import com.hana.hanalink.plan.repository.PlanRepository;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.exception.TeamNotFoundException;
@@ -55,6 +56,13 @@ public class PlanService {
                 .place(plan.getPlace())
                 .cost(plan.getCost())
                 .planImg(plan.getPlanImg())
+                .isSurveyed(plan.isSurveyed())
                 .build();
+    }
+
+    public void setIsSurveyed(Long planId) {
+        Plan plan = planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+        plan.checkIsSurveyed();
+        planRepository.save(plan);
     }
 }
