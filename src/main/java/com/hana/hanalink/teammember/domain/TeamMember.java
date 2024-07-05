@@ -39,7 +39,7 @@ public class TeamMember extends BaseEntity {
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
-    public TeamMemberRes toDto(String gender, String profile,String name){
+    public TeamMemberRes toDto(String gender,String profile,String name){
         return TeamMemberRes.builder()
                 .teamMemberId(teamMemberId)
                 .name(name)

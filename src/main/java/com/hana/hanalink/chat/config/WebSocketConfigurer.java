@@ -1,4 +1,4 @@
-package com.hana.hanalink.chatting.config;
+package com.hana.hanalink.chat.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

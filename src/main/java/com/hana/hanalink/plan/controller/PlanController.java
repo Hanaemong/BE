@@ -31,7 +31,7 @@ public class PlanController {
     }
 
     @GetMapping("/{teamId}")
-    SuccessResponse<List<PlanRes>> getDetailTeam(@PathVariable("teamId") Long teamId) {
+    SuccessResponse<List<PlanRes>> getPlans(@PathVariable("teamId") Long teamId) {
         return SuccessResponse.success(planService.getPlans(teamId));
     }
 }
