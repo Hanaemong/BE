@@ -2,7 +2,6 @@ package com.hana.hanalink.meetingacount.domain;
 
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;
-import com.hana.hanalink.team.domain.Team;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,4 +22,8 @@ public class MeetingAccount extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
+
+    public void changeMeetingAccount(Account account) {
+        this.account = account;
+    }
 }
