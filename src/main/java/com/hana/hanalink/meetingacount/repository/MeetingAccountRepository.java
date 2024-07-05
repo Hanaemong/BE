@@ -8,4 +8,6 @@ public interface MeetingAccountRepository extends JpaRepository<MeetingAccount,L
 
     MeetingAccount findMeetingAccountByAccount(Account account);
 
+    boolean existsByAccount(Account account);
+
 }
