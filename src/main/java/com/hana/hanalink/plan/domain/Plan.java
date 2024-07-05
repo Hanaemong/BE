@@ -39,4 +39,11 @@ public class Plan extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "team_id", nullable = false)
     private Team team;
+
+    @Column(name = "is_surveyed",nullable = false)
+    private boolean isSurveyed = false;
+
+    public void checkIsSurveyed(){
+        this.isSurveyed=true;
+    }
 }
