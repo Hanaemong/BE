@@ -21,6 +21,7 @@ import com.hana.hanalink.team.exception.TeamNotFoundException;
 import com.hana.hanalink.team.repository.TeamRepository;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
+import com.hana.hanalink.teammember.exception.NicknameDuplException;
 import com.hana.hanalink.teammember.repository.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,9 @@ public class TeamService {
 
     @Transactional
     public CreateTeamRes createTeam(String phone, CreateTeamReq req, String thumbNail) {
+        if (nicknameDupl(req.nickname()))
+            throw new NicknameDuplException();
+
         Member member = getMember(phone);
         Account account = accountRepository.findAccountByMember_MemberId(member.getMemberId());
         MeetingAccount meetingAccount = MeetingAccount.builder()
@@ -58,9 +62,8 @@ public class TeamService {
         teamRepository.save(team);
 
         TeamMember teamMember = TeamMember.builder()
-                .nickname("")
+                .nickname(req.nickname())
                 .role(TeamMemberRole.CHAIR)
-                .hello("")
                 .member(member)
                 .team(team)
                 .build();
@@ -78,12 +81,14 @@ public class TeamService {
 
     @Transactional
     public void joinTeam(String phone, Long teamId, JoinTeamReq req) {
+        if (nicknameDupl(req.nickname()))
+            throw new NicknameDuplException();
+
         Member member = getMember(phone);
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         TeamMember teamMember = TeamMember.builder()
-                .nickname("")
+                .nickname(req.nickname())
                 .role(TeamMemberRole.PENDING)
-                .hello(req.hello())
                 .member(member)
                 .team(team)
                 .build();
@@ -159,6 +164,12 @@ public class TeamService {
                 .memberCnt(teamMemberRepository.countByTeamAndRoleNot(team,TeamMemberRole.PENDING))
                 .build();
     }
+
+    public boolean nicknameDupl(String nickName) {
+        return teamMemberRepository.existsByNickname(nickName);
+    }
+
+
 
 
 }

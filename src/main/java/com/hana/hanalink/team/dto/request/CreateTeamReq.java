@@ -5,7 +5,7 @@ import com.hana.hanalink.sigungu.domain.SiGunGu;
 import com.hana.hanalink.surveyresponse.domain.SurveyResponse;
 import com.hana.hanalink.team.domain.Team;
 
-public record CreateTeamReq(String teamName, String teamDesc, Integer capacity, String category) {
+public record CreateTeamReq(String teamName, String teamDesc, Integer capacity, String category, String nickname) {
     public static Team toEntity(CreateTeamReq req, SiGunGu siGunGu, SurveyResponse surveyResponse, MeetingAccount meetingAccount, String thumbNail) {
 
         return Team.builder()
