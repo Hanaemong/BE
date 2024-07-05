@@ -24,5 +24,7 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember,Long> {
 
     Optional<TeamMember> findByMemberAndTeam_TeamId(Member member, Long teamId);
 
+    Boolean existsByNickname(String nickname);
+
 
 }

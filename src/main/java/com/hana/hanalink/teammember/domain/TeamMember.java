@@ -28,9 +28,6 @@ public class TeamMember extends BaseEntity {
     @Column(name = "role", nullable = false)
     private TeamMemberRole role;
 
-    @Column(name = "hello",nullable = false)
-    private String hello;
-
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
