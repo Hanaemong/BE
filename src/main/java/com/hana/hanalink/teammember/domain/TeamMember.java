@@ -39,7 +39,7 @@ public class TeamMember extends BaseEntity {
     public TeamMemberRes toDto(String gender,String profile,String name){
         return TeamMemberRes.builder()
                 .teamMemberId(teamMemberId)
-                .name(name)
+                .nickName(name)
                 .gender(gender)
                 .profile(profile)
                 .role(role)

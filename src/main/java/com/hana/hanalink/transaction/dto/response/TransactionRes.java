@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 public record TransactionRes(
     String memberProfile,
     String memberName,
+
+    String memberNickname,
     String memberGender,
     Long amount,
     TransactionType type,
