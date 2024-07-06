@@ -4,15 +4,16 @@ import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.accountto.domain.AccountTo;
 import com.hana.hanalink.accountto.repository.AccountToRepository;
-import com.hana.hanalink.common.service.PaymentTestData;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.common.firebase.FirebaseFcmService;
+import com.hana.hanalink.common.service.PaymentTestData;
 import com.hana.hanalink.meetingacount.domain.MeetingAccount;
 import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.exception.TeamNotFoundException;
 import com.hana.hanalink.team.repository.TeamRepository;
+import com.hana.hanalink.teammember.repository.TeamMemberRepository;
 import com.hana.hanalink.transaction.domain.Transaction;
 import com.hana.hanalink.transaction.domain.TransactionType;
 import com.hana.hanalink.transaction.dto.request.TransactionReq;
@@ -36,6 +37,7 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final MeetingAccountRepository meetingAccountRepository;
+    private final TeamMemberRepository teamMemberRepository;
     private final TeamRepository teamRepository;
     private final AccountRepository accountRepository;
     private final AccountToRepository accountToRepository;
@@ -54,7 +56,7 @@ public class TransactionService {
         List<Transaction> transactions = transactionRepository.findByAccountTo_AccountIdAndYearMonth(accountTo.getAccountToId(),date.getYear(),date.getMonthValue());
 
         List<TransactionRes> transactionResList = transactions.stream().map(trans -> (
-                trans.toTransMember(trans.getAccountTo().getAccount().getMember()))).toList();
+                trans.toTransMember(trans.getAccountFrom().getMember()))).toList();
 
         return TransactionDetailRes.builder()
                 .balance(account.getBalance()) //잔액
@@ -93,7 +95,7 @@ public class TransactionService {
         return new PaymentCardResponse(paidStore, paidAmount, LocalDateTime.now());
     }
 
-    public Long paymentDues(Long teamId, TransactionReq transactionReq, MemberDetails member) {
+    public Long paymentDues(Long teamId, TransactionReq transactionReq) {
 
         Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new).getMeetingAccount().getMeetingAccountId();
         MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(EntityNotFoundException::new);
@@ -109,7 +111,7 @@ public class TransactionService {
 
         Transaction transaction = Transaction.builder()
                 .amount(transactionReq.amount())
-                .transFrom(member.getMemberName())
+                .transFrom(transactionReq.nickName())
                 .transTo(team.getTeamName())
                 .accountFrom(myAccount)
                 .accountTo(chairAccount)

@@ -48,6 +48,7 @@ public class Transaction extends BaseEntity {
         return TransactionRes.builder()
                 .memberGender(member.getGender())
                 .memberName(member.getName())
+                .memberNickname(transFrom)
                 .memberGender(member.getGender())
                 .amount(amount)
                 .memberProfile(member.getProfile())

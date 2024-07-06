@@ -28,8 +28,8 @@ public class TransactionController {
 
     /*회비 납부하기*/
     @PostMapping("/transaction/{teamId}")
-    public SuccessResponse<Long> createTransaction(@PathVariable("teamId") Long teamId, @RequestBody TransactionReq transactionReq,@AuthenticationPrincipal MemberDetails member){
-        return SuccessResponse.success(transactionService.paymentDues(teamId,transactionReq,member));
+    public SuccessResponse<Long> createTransaction(@PathVariable("teamId") Long teamId, @RequestBody TransactionReq transactionReq){
+        return SuccessResponse.success(transactionService.paymentDues(teamId,transactionReq));
     }
 
 

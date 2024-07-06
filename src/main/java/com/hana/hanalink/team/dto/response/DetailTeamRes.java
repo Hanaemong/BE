@@ -12,9 +12,10 @@ public record DetailTeamRes(
         Float score,
         String thumbNail,
         String banner,
+        String nickName,
         TeamMemberRole role
 ) {
-    public DetailTeamRes(Team team, TeamMemberRole role) {
+    public DetailTeamRes(Team team, TeamMemberRole role,String nickName) {
         this(
                 team.getTeamId(),
                 team.getSiGunGu().getSiGunGu(),
@@ -24,6 +25,7 @@ public record DetailTeamRes(
                 team.getScore(),
                 team.getThumbNail(),
                 team.getBanner(),
+                nickName,
                 role
         );
     }

@@ -145,7 +145,7 @@ public class TeamService {
         Optional<TeamMember> teamMemberOptional = teamMemberRepository.findByMemberAndTeam(member, team);
         TeamMemberRole role = teamMemberOptional.map(TeamMember::getRole).orElse(null);
 
-        return new DetailTeamRes(team, role);
+        return new DetailTeamRes(team, role, teamMemberOptional.get().getNickname());
     }
 
 
