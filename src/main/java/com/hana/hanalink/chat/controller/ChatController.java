@@ -5,7 +5,6 @@ import com.hana.hanalink.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Mono;
@@ -25,4 +24,7 @@ public class ChatController {
         simpMessageSendingOperations.convertAndSend("topic" + chatDto.getRoomId(), chatDto);
         return chatService.saveChat(chatDto.toEntity()).then();
     }
+
+
+
 }
