@@ -15,7 +15,7 @@
 
                 console.log('Connected: ' + frame);
                 var roomId = document.getElementById("roomId").value;
-                stompClient.subscribe('/sub/room/' + roomId, function (chatDto) {
+                stompClient.subscribe('/topic/' + roomId, function (chatDto) {
                     showMessage(JSON.parse(chatDto.body));
                 });
             });
@@ -33,6 +33,7 @@
                 nickname: document.getElementById("nickname").value,
                 roomId: document.getElementById("roomId").value,
                 msg: document.getElementById("chatDto").value,
+                time: new Date().toISOString(), // ISO 형식으로 변환
                 type: "chat"
             };
             stompClient.send("/pub/send", {}, JSON.stringify(chatDto));
