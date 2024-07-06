@@ -23,6 +23,7 @@ public class ChatDto {
                 .type(type)
                 .nickname(nickname)
                 .msg(msg)
+                .time(time)
                 .build();
     }
     public void setNickname(String nickname) {
