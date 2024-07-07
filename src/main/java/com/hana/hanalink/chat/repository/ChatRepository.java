@@ -9,5 +9,4 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface ChatRepository extends ReactiveMongoRepository<Chat, String> {
     Flux<Chat> findByRoomId(String roomId);
-
 }

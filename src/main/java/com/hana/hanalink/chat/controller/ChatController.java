@@ -21,7 +21,7 @@ public class ChatController {
      */
     @MessageMapping("/send")
     public Mono<Void> message(@Payload ChatDto chatDto) {
-        simpMessageSendingOperations.convertAndSend("topic" + chatDto.getRoomId(), chatDto);
+        simpMessageSendingOperations.convertAndSend("/topic/" + chatDto.getRoomId(), chatDto);
         return chatService.saveChat(chatDto.toEntity()).then();
     }
 

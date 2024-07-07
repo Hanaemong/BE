@@ -24,5 +24,4 @@ public class ChatService {
     public Flux<Chat> getChatsByRoomId(String roomId) {
         return chatRepository.findByRoomId(roomId);
     }
-
 }
