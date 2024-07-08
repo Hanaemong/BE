@@ -1,12 +1,12 @@
-package com.hana.hanalink.meetingacount.service;
+package com.hana.hanalink.meetingaccount.service;
 
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.account.repository.AccountRepository;
 import com.hana.hanalink.accountto.domain.AccountTo;
 import com.hana.hanalink.accountto.repository.AccountToRepository;
-import com.hana.hanalink.meetingacount.domain.MeetingAccount;
-import com.hana.hanalink.meetingacount.exception.NotChangeChairException;
-import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
+import com.hana.hanalink.meetingaccount.domain.MeetingAccount;
+import com.hana.hanalink.meetingaccount.exception.NotChangeChairException;
+import com.hana.hanalink.meetingaccount.repository.MeetingAccountRepository;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
 import com.hana.hanalink.teammember.repository.TeamMemberRepository;

@@ -1,6 +1,6 @@
 package com.hana.hanalink.team.dto.request;
 
-import com.hana.hanalink.meetingacount.domain.MeetingAccount;
+import com.hana.hanalink.meetingaccount.domain.MeetingAccount;
 import com.hana.hanalink.sigungu.domain.SiGunGu;
 import com.hana.hanalink.surveyresponse.domain.SurveyResponse;
 import com.hana.hanalink.team.domain.Team;

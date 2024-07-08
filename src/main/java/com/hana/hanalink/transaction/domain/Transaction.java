@@ -56,4 +56,17 @@ public class Transaction extends BaseEntity {
                 .paidDate(getCreatedAt())
                 .build();
     }
+
+    public TransactionRes toTransPayment() {
+        return TransactionRes.builder()
+                .memberGender("")
+                .memberName(transTo)
+                .memberNickname("")
+                .memberGender("")
+                .amount(amount)
+                .memberProfile("")
+                .type(type)
+                .paidDate(getCreatedAt())
+                .build();
+    }
 }
