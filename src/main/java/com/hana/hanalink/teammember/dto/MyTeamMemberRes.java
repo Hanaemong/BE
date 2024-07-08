@@ -1,4 +1,6 @@
 package com.hana.hanalink.teammember.dto;
 
-public record MyTeamMemberRes(String nickname, String profile) {
+import com.hana.hanalink.teammember.domain.TeamMemberRole;
+
+public record MyTeamMemberRes(String nickname, String profile, TeamMemberRole role) {
 }
