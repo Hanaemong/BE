@@ -34,7 +34,7 @@ public class TransactionController {
 
 
     /*지출하기*/
-    @GetMapping("/transaction/expense/{teamId}")
+    @PostMapping("/transaction/expense/{teamId}")
     public SuccessResponse<PaymentCardResponse> payMeetingAccount(@PathVariable("teamId") Long teamId, @AuthenticationPrincipal MemberDetails member) {
         return SuccessResponse.success(transactionService.paymentCard(member,teamId));
     }
