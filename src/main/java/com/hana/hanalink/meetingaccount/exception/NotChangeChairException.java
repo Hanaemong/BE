@@ -1,4 +1,4 @@
-package com.hana.hanalink.meetingacount.exception;
+package com.hana.hanalink.meetingaccount.exception;
 
 import com.hana.hanalink.common.exception.AccessDeniedException;
 

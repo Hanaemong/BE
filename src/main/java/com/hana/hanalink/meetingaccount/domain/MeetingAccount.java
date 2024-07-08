@@ -1,4 +1,4 @@
-package com.hana.hanalink.meetingacount.domain;
+package com.hana.hanalink.meetingaccount.domain;
 
 import com.hana.hanalink.account.domain.Account;
 import com.hana.hanalink.common.domain.BaseEntity;

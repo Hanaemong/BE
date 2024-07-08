@@ -7,8 +7,9 @@ import com.hana.hanalink.accountto.repository.AccountToRepository;
 import com.hana.hanalink.common.exception.EntityNotFoundException;
 import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.common.service.PaymentTestData;
-import com.hana.hanalink.meetingacount.domain.MeetingAccount;
-import com.hana.hanalink.meetingacount.repository.MeetingAccountRepository;
+import com.hana.hanalink.meetingaccount.domain.MeetingAccount;
+import com.hana.hanalink.meetingaccount.exception.MeetingAccountNotFoundException;
+import com.hana.hanalink.meetingaccount.repository.MeetingAccountRepository;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.domain.Team;
 import com.hana.hanalink.team.exception.TeamNotFoundException;
@@ -46,17 +47,24 @@ public class TransactionService {
     public TransactionDetailRes getTransHistory(Long teamId, YearMonth date){
 
         /*모임을 거쳐서 모임통장 정보 가져오기*/
-        Team team = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new);
-        Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(EntityNotFoundException::new).getMeetingAccount().getMeetingAccountId();
-        MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(EntityNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        Long meetingAccountId = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new).getMeetingAccount().getMeetingAccountId();
+        MeetingAccount meetingAccount = meetingAccountRepository.findById(meetingAccountId).orElseThrow(MeetingAccountNotFoundException::new);
 
         /*년,월 별로 거래 내역 가져오기*/
         Account account = accountRepository.findById(meetingAccount.getAccount().getAccountId()).orElseThrow(EntityNotFoundException::new);
         AccountTo accountTo = accountToRepository.findAccountToByAccount_AccountId(account.getAccountId());
-        List<Transaction> transactions = transactionRepository.findByAccountTo_AccountIdAndYearMonth(accountTo.getAccountToId(),date.getYear(),date.getMonthValue());
+        List<Transaction> transactions = transactionRepository.findByAccountTo_AccountIdAndYearMonth(accountTo.getAccountToId(),date.getYear(),date.getMonthValue(),account.getAccountId());
 
-        List<TransactionRes> transactionResList = transactions.stream().map(trans -> (
-                trans.toTransMember(trans.getAccountFrom().getMember()))).toList();
+        List<TransactionRes> transactionResList = transactions.stream().map(trans ->
+                {
+                    if (trans.getType().equals(TransactionType.PAYMENT)) {
+                        return trans.toTransPayment();
+                    } else {
+                        return trans.toTransMember(trans.getAccountFrom().getMember());
+                    }
+                }
+        ).toList();
 
         return TransactionDetailRes.builder()
                 .balance(account.getBalance()) //잔액

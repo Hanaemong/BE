@@ -1,7 +1,7 @@
-package com.hana.hanalink.meetingacount.repository;
+package com.hana.hanalink.meetingaccount.repository;
 
 import com.hana.hanalink.account.domain.Account;
-import com.hana.hanalink.meetingacount.domain.MeetingAccount;
+import com.hana.hanalink.meetingaccount.domain.MeetingAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MeetingAccountRepository extends JpaRepository<MeetingAccount,Long> {

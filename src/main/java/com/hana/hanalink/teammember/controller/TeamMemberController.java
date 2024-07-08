@@ -2,7 +2,7 @@ package com.hana.hanalink.teammember.controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.hana.hanalink.common.dto.SuccessResponse;
-import com.hana.hanalink.meetingacount.service.MeetingAccountService;
+import com.hana.hanalink.meetingaccount.service.MeetingAccountService;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.teammember.dto.MyTeamMemberRes;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
