@@ -6,8 +6,12 @@ import com.hana.hanalink.member.domain.Member;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.member.exception.MemberNotFoundException;
 import com.hana.hanalink.member.repository.MemberRepository;
+import com.hana.hanalink.team.domain.Team;
+import com.hana.hanalink.team.exception.TeamNotFoundException;
+import com.hana.hanalink.team.repository.TeamRepository;
 import com.hana.hanalink.teammember.domain.TeamMember;
 import com.hana.hanalink.teammember.domain.TeamMemberRole;
+import com.hana.hanalink.teammember.dto.MyTeamMemberRes;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import com.hana.hanalink.teammember.exception.TeamMemberNotFoundException;
 import com.hana.hanalink.teammember.repository.TeamMemberRepository;
@@ -16,11 +20,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TeamMemberService {
 
+    private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final FirebaseFcmService firebaseFcmService;
     private final MemberRepository memberRepository;
@@ -29,6 +35,14 @@ public class TeamMemberService {
     public List<TeamMemberRes> getTeamMembers(Long teamId) {
         return teamMemberRepository.findTeamMemberByTeam_TeamId(teamId).stream().map(teamMember -> teamMember.toDto(teamMember.getMember().getGender(),teamMember.getMember().getProfile(),teamMember.getNickname())
                 ).toList();
+    }
+
+    public MyTeamMemberRes getMyNickname(MemberDetails memberDetails, Long teamId) {
+        Member member = memberRepository.findByPhone(memberDetails.getUsername()).orElseThrow(MemberNotFoundException::new);
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
+        TeamMember teamMember = teamMemberRepository.findByMemberAndTeam(member, team).orElseThrow(TeamMemberNotFoundException::new);
+
+        return new MyTeamMemberRes(teamMember.getNickname());
     }
 
     @Transactional
