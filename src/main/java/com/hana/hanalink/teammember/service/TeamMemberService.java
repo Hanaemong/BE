@@ -46,22 +46,25 @@ public class TeamMemberService {
 
     @Transactional
     public void deleteTeamMember(Long teamMemberId, String type, MemberDetails memberDetails) {
-        TeamMember teamMember = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
         Long id = teamMemberId;
         switch (type) {
             /*탈퇴 ! 여기서는 teamMemberId가 teamId로 쓰임*/
             case "LEAVE":
                 Member member = memberRepository.findByPhone(memberDetails.getUsername()).orElseThrow(MemberNotFoundException::new);
-                TeamMember myTeamMember = teamMemberRepository.findByMemberAndTeam_TeamId(member,id).orElseThrow(TeamMemberNotFoundException::new);
-                firebaseFcmService.sendFcmTeamOfAlarmType(myTeamMember.getMember().getFcmToken(),"모임 탈퇴 알림🥲",myTeamMember.getTeam().getTeamName()+"모임에 탈퇴되었습니다.",myTeamMember.getTeam(),myTeamMember.getMember());
+                TeamMember myTeamMember = teamMemberRepository.findByMember_MemberIdAndTeam_TeamId(member.getMemberId(),id).orElseThrow(TeamMemberNotFoundException::new);
+                firebaseFcmService.sendFcmTeamOfAlarmType(myTeamMember.getMember().getFcmToken(),"모임 탈퇴 알림🥲",myTeamMember.getTeam().getTeamName()+" 에서 탈퇴되었습니다.",myTeamMember.getTeam(),myTeamMember.getMember());
                 id = myTeamMember.getTeamMemberId();
+                break;
             /*거절*/
             case "DENY":
-                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember.getTeam().getTeamName()+"모임가입이 거절되었습니다.",teamMember.getTeam(),teamMember.getMember());
+                TeamMember teamMember_deny = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember_deny.getMember().getFcmToken(),"모임 거절 알림🥺",teamMember_deny.getTeam().getTeamName()+" 가입이 거절되었습니다.",teamMember_deny.getTeam(),teamMember_deny.getMember());
+                break;
             /*내보내기*/
             case "REJECT":
-                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember.getMember().getFcmToken(),"모임 강퇴 알림☹️",teamMember.getTeam().getTeamName()+"모임에 내보내기되었습니다.",teamMember.getTeam(),teamMember.getMember());
-
+                TeamMember teamMember_reject = teamMemberRepository.findById(teamMemberId).orElseThrow(TeamMemberNotFoundException::new);
+                firebaseFcmService.sendFcmTeamOfAlarmType(teamMember_reject.getMember().getFcmToken(),"모임 강퇴 알림☹️",teamMember_reject.getTeam().getTeamName()+" 에서 내보내기되었습니다.",teamMember_reject.getTeam(),teamMember_reject.getMember());
+                break;
         }
         teamMemberRepository.deleteById(id);
     }
