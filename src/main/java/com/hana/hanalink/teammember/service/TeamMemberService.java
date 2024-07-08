@@ -42,7 +42,7 @@ public class TeamMemberService {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         TeamMember teamMember = teamMemberRepository.findByMemberAndTeam(member, team).orElseThrow(TeamMemberNotFoundException::new);
 
-        return new MyTeamMemberRes(teamMember.getNickname());
+        return new MyTeamMemberRes(teamMember.getNickname(),member.getProfile());
     }
 
     @Transactional
