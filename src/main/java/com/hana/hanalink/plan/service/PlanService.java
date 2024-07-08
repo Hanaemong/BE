@@ -41,7 +41,7 @@ public class PlanService {
 
     public List<PlanRes> getPlans(Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
-        List<Plan> planList = planRepository.findByTeamOrderByCreatedAtDesc(team);
+        List<Plan> planList = planRepository.findByTeamOrderByPlanDateDesc(team);
 
         return planList.stream()
                 .map(this::buildPlanRes)
