@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.hana.hanalink.common.dto.SuccessResponse;
 import com.hana.hanalink.meetingacount.service.MeetingAccountService;
 import com.hana.hanalink.member.domain.MemberDetails;
+import com.hana.hanalink.teammember.dto.MyTeamMemberRes;
 import com.hana.hanalink.teammember.dto.TeamMemberRes;
 import com.hana.hanalink.teammember.dto.TeamMemberRoleChangeReq;
 import com.hana.hanalink.teammember.service.TeamMemberService;
@@ -27,10 +28,16 @@ public class TeamMemberController {
         return SuccessResponse.success(teamMemberService.getTeamMembers(teamId));
     }
 
+    @GetMapping("/my/{teamId}")
+    public SuccessResponse<MyTeamMemberRes> getMyNickname(@AuthenticationPrincipal MemberDetails member, @PathVariable("teamId") Long teamId) {
+        return SuccessResponse.success(teamMemberService.getMyNickname(member, teamId));
+    }
+
     /*모임원 내보내기*/
     @DeleteMapping("/{teamMemberId}")
     public SuccessResponse<Long> deleteTeamMember(@PathVariable("teamMemberId") Long teamMemberId, @RequestParam("type") String type, @AuthenticationPrincipal MemberDetails member) {
-        teamMemberService.deleteTeamMember(teamMemberId,type,member);
+
+        teamMemberService.deleteTeamMember(teamMemberId, type, member);
         return SuccessResponse.successWithNoData();
     }
 

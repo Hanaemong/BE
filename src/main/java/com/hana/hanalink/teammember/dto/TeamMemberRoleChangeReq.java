@@ -1,4 +1,5 @@
 package com.hana.hanalink.teammember.dto;
 
-public record TeamMemberRoleChangeReq( Long ToChairId){
+public record TeamMemberRoleChangeReq(Long ToChairId) {
+
 }
