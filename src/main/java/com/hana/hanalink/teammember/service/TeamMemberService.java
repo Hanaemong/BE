@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class TeamMemberService {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFoundException::new);
         TeamMember teamMember = teamMemberRepository.findByMemberAndTeam(member, team).orElseThrow(TeamMemberNotFoundException::new);
 
-        return new MyTeamMemberRes(teamMember.getNickname(),member.getProfile());
+        return new MyTeamMemberRes(teamMember.getNickname(),member.getProfile(),teamMember.getRole());
     }
 
     @Transactional
