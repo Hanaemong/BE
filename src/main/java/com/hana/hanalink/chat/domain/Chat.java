@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
 
 @Getter
 @Builder
@@ -19,7 +17,7 @@ public class Chat {
     @Id
     private String id;
     private String roomId;
-    private String type;
+    private String profile;
     private String nickname;
     private String msg;
     private String time;
