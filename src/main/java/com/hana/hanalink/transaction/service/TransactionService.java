@@ -116,6 +116,8 @@ public class TransactionService {
 
         /*내 계좌 출금*/
         myAccountWithdraw(myAccount,transactionReq.amount());
+        meetingAccount.getAccount().deposit(transactionReq.amount());
+        accountRepository.save(meetingAccount.getAccount());
 
         Transaction transaction = Transaction.builder()
                 .amount(transactionReq.amount())

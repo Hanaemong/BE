@@ -1,6 +1,8 @@
 package com.hana.hanalink.team.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.hana.hanalink.common.dto.SuccessResponse;
+import com.hana.hanalink.common.firebase.FirebaseFcmService;
 import com.hana.hanalink.common.service.ImageUploadService;
 import com.hana.hanalink.member.domain.MemberDetails;
 import com.hana.hanalink.team.dto.request.CreateTeamReq;
@@ -23,6 +25,7 @@ import java.util.List;
 public class TeamController {
     private final TeamService teamService;
     private final ImageUploadService imageUploadService;
+    private final FirebaseFcmService firebaseFcmService;
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<CreateTeamRes> createTeam(@AuthenticationPrincipal MemberDetails member,
@@ -43,8 +46,9 @@ public class TeamController {
     @PostMapping("/{teamId}")
     SuccessResponse<Void> joinTeam(@AuthenticationPrincipal MemberDetails member,
                                    @PathVariable("teamId") Long teamId,
-                                   @RequestBody JoinTeamReq req) {
+                                   @RequestBody JoinTeamReq req) throws FirebaseMessagingException {
         teamService.joinTeam(member.getUsername(), teamId, req);
+        firebaseFcmService.subscribeToTopic(member.getMemberFcmToken(),teamId.toString());
         return SuccessResponse.successWithNoData();
     }
 
