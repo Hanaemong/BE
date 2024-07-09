@@ -30,15 +30,17 @@ public class MeetingAccountService {
         TeamMember curChair = teamMemberRepository.findTeamMemberByTeam_TeamIdAndRole(teamId, TeamMemberRole.CHAIR);
         Account chairAccount = accountRepository.findAccountByMember_MemberId(curChair.getMember().getMemberId());
 
+        TeamMember nextChair = teamMemberRepository.findById(nextChairId).orElseThrow();
+        Account nextChairAccount = accountRepository.findAccountByMember_MemberId(nextChair.getMember().getMemberId());
+
         /*모임통장 계좌 변경가능 확인*/
 
-        if(meetingAccountRepository.existsByAccount(chairAccount)) {
+        if(meetingAccountRepository.existsByAccount(nextChairAccount)) {
             throw new NotChangeChairException();
         }
 
-        /* role 변경*/
-        TeamMember nextChair = teamMemberRepository.findById(nextChairId).orElseThrow();
 
+        /* role 변경*/
         curChair.changeRole(TeamMemberRole.REGULAR);
         nextChair.changeRole(TeamMemberRole.CHAIR);
         teamMemberRepository.save(curChair);
@@ -46,7 +48,6 @@ public class MeetingAccountService {
 
         /*총무 계좌와 다음 총무 계좌 변경*/
         MeetingAccount meetingAccount = meetingAccountRepository.findMeetingAccountByAccount(chairAccount);
-        Account nextChairAccount = accountRepository.findAccountByMember_MemberId(nextChair.getMember().getMemberId());
         meetingAccount.changeMeetingAccount(nextChairAccount);
         meetingAccountRepository.save(meetingAccount);
 
