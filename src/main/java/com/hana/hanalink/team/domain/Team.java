@@ -25,7 +25,7 @@ public class Team extends BaseEntity {
     @Column(name = "team_name", nullable = false)
     private String teamName;
 
-    @Column(name = "team_desc", nullable = false)
+    @Column(name = "team_desc", nullable = false, length = 3000)
     private String teamDesc;
 
     @Column(name = "category", nullable = false)
