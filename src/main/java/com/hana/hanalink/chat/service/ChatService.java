@@ -28,4 +28,7 @@ public class ChatService {
     public Mono<Chat> getLastChatByRoomId(String roomId) {
         return chatRepository.findByRoomId(roomId).last();
     }
+    public Mono<Boolean> checkNicknameDupl(String nickname) {
+        return chatRepository.existsByNickname(nickname);
+    }
 }
