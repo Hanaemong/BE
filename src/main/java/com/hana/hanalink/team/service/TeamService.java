@@ -96,7 +96,9 @@ public class TeamService {
 
         /*fcm 모임 총무한테 가입요청 알림 발송*/
         TeamMember chair = teamMemberRepository.findTeamMemberByTeam_TeamIdAndRole(teamId,TeamMemberRole.CHAIR);
-        firebaseFcmService.sendFcmTeamOfAlarmType(chair.getMember().getFcmToken(),"모임 수락 요청 알림",member.getName()+"님이 "+team.getTeamName()+"  승인 요청하였습니다.",chair.getTeam(),chair.getMember());
+        if (!chair.getMember().getFcmToken().isEmpty()) {
+            firebaseFcmService.sendFcmTeamOfAlarmType(chair.getMember().getFcmToken(), "모임 수락 요청 알림", member.getName() + "님이 " + team.getTeamName() + "  승인 요청하였습니다.", chair.getTeam(), chair.getMember());
+        }
     }
 
     public List<TeamRes> getTeamList(String phone) {

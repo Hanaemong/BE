@@ -74,7 +74,6 @@ public class SurveyService {
                     // 만약 예상하지 못한 등급이 들어올 경우 예외 처리
                     throw new IllegalArgumentException("Invalid roundedScore: " + roundedScore);
             }
-
             firebaseFcmService.sendTopicMessageWithImage(teamId, title, message, AlarmType.LEVEL, false);
         }
 
