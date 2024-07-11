@@ -48,7 +48,9 @@ public class TeamController {
                                    @PathVariable("teamId") Long teamId,
                                    @RequestBody JoinTeamReq req) throws FirebaseMessagingException {
         teamService.joinTeam(member.getUsername(), teamId, req);
-        firebaseFcmService.subscribeToTopic(member.getMemberFcmToken(),teamId.toString());
+        if (!member.getMemberFcmToken().isEmpty()) {
+            firebaseFcmService.subscribeToTopic(member.getMemberFcmToken(), teamId.toString());
+        }
         return SuccessResponse.successWithNoData();
     }
 
